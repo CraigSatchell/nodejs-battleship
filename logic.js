@@ -1,12 +1,55 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText } = require('./helper');
+const { promptFor, pressReturn, cenText, appBanner, appTitle } = require('./helper');
+const AI = require('./classes/player/AI');
+const Human = require('./classes/player/Human');
 
-// TODO: get player name from user input
-const getPlayerInfo = () => {
+
+// initialize 
+
+// Get player name from user input
+const getPlayerName = () => {
+   appBanner(appTitle);
+   console.log('\n\n');
+
+   let playerName = promptFor("\t\tEnter player's name: ").toUpperCase();
+   return playerName;
+}
+
+
+// TODO: run application and game simulation
+const runApplication = () => {
+   let player1;
+   let player2;
+   let loop = true;
+   while (loop) {
+      appBanner(appTitle);
+      console.log('\n\n');
+
+      console.log("\t\tDo you wish to player another person or")
+      let gameMode = promptFor("\t\tsolo? Enter 'P' for person or 'S' for solo: ").toUpperCase();
+      if (gameMode === 'P' || gameMode === 'S') {
+         if (gameMode === 'P') {
+            player1 = new Human('Player 1');
+            player2 = new AI('AI Player');
+         } else {
+            player1 = new Human('Player 1');
+            player2 = new Human('Player 2');
+
+         }
+         loop = false;
+      }
+   }
+   getPlayerName(); ////////////TODO
+}
+
+
+// TODO: Setup game parameters (ex. game grid, player info, solo or two player)
+const setupGame = () => {
 
 
 }
+
 
 
 // TODO: place individual player ships on game grid
@@ -15,13 +58,13 @@ const placeShip = () => {
 }
 
 
-// prompt current player for shot using game grid coordinates
+// Prompt current player for shot using game grid coordinates
 const callShot = (validShotCallback) => {
    let shot = '';
    let loop = true;
    while (loop) {
       shot = promptFor('Enter Shot (ex. F4, A1): ').toUpperCase();
-      if (shot.length === 2 && validShotCallback(shot) ) {
+      if (shot.length === 2 && validShotCallback(shot)) {
          console.log(shot);
          loop = false;
       }
@@ -30,7 +73,7 @@ const callShot = (validShotCallback) => {
 
 
 // Check if player entered valid shot coordinates
-const isValidShotCoords = (arrShotCoords) => {  
+const isValidShotCoords = (arrShotCoords) => {
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    let gridCols = 20;
    let rowValue = arrShotCoords[0];
@@ -114,4 +157,5 @@ const checkShipSunk = () => {
 
 }
 
-callShot(isValidShotCoords);     // call shot and validate player selection is valid
+//callShot(isValidShotCoords);     // call shot and validate player selection is valid
+runApplication()

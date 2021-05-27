@@ -21,7 +21,7 @@ function pressReturn(msg = 'Press RETURN...') {
 
 // prompt for standard data entry
 function promptFor(label) {
-   return prompt(`\t\t${label}`);
+   return prompt(`${label}`);
 }
 
 
