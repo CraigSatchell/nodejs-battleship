@@ -5,15 +5,16 @@ const AI = require('./classes/player/AI');
 const Human = require('./classes/player/Human');
 
 
-// initialize 
-
-// Get player name from user input
-const getPlayerName = () => {
+// Prompt for player name from user input
+const promptForPlayerName = (currPlayerName) => {
+   let playerName = '';
    appBanner(appTitle);
    console.log('\n\n');
-
-   let playerName = promptFor("\t\tEnter player's name: ").toUpperCase();
-   return playerName;
+   playerName = promptFor("\t\tEnter player's name: ").toUpperCase();
+   if (playerName != '') {
+      return playerName;
+   }
+   return currPlayerName;
 }
 
 
@@ -28,7 +29,7 @@ const runApplication = () => {
 
       console.log("\t\tDo you wish to player another person or")
       let gameMode = promptFor("\t\tsolo? Enter 'P' for person or 'S' for solo: ").toUpperCase();
-      if (gameMode === 'P' || gameMode === 'S') {
+      if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'P') {
             player1 = new Human('Player 1');
             player2 = new AI('AI Player');
@@ -40,7 +41,9 @@ const runApplication = () => {
          loop = false;
       }
    }
-   getPlayerName(); ////////////TODO
+
+   player1 = promptForPlayerName(player1.name);    // get name for player 1
+   player2 = promptForPlayerName(player2.name);    // get name for player 2
 }
 
 
