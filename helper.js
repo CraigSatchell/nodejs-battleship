@@ -41,6 +41,10 @@ function cenText(text, width = 50) {
 }
 
 
+function indentText(text) {
+   return (`\t\t${text}`);
+}
+
 async function wait(msg='', secs=3) {
    await new Promise(r => setTimeout(r, secs * 1000));
    console.log(msg);
@@ -66,6 +70,7 @@ function playGameBanner() {
 
 
 module.exports.cenText = cenText;
+module.exports.indentText = indentText;
 module.exports.promptGesture = promptGesture;
 module.exports.promptFor = promptFor;
 module.exports.pressReturn = pressReturn;

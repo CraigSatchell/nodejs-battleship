@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, appBanner, appTitle } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, appTitle } = require('./helper');
 const AI = require('./classes/player/AI');
 const Human = require('./classes/player/Human');
 
@@ -10,7 +10,7 @@ const promptForPlayerName = (currPlayerName) => {
    let playerName = '';
    appBanner(appTitle);
    console.log('\n\n');
-   playerName = promptFor("\t\tEnter player's name: ").toUpperCase();
+   playerName = promptFor("\t\tEnter player's name: ");
    if (playerName != '') {
       return playerName;
    }
@@ -27,8 +27,8 @@ const runApplication = () => {
       appBanner(appTitle);
       console.log('\n\n');
 
-      console.log("\t\tDo you wish to player another person or")
-      let gameMode = promptFor("\t\tsolo? Enter 'P' for person or 'S' for solo: ").toUpperCase();
+      console.log(indentText("Do you wish to player another person or"));
+      let gameMode = promptFor(indentText("solo? Enter 'P' for person or 'S' for solo: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'P') {
             player1 = new Human('Player 1');
@@ -36,7 +36,6 @@ const runApplication = () => {
          } else {
             player1 = new Human('Player 1');
             player2 = new Human('Player 2');
-
          }
          loop = false;
       }
@@ -44,6 +43,8 @@ const runApplication = () => {
 
    player1 = promptForPlayerName(player1.name);    // get name for player 1
    player2 = promptForPlayerName(player2.name);    // get name for player 2
+
+   console.log('\n' + indentText('Player 1:'), player1, 'Player 2:', player2);
 }
 
 
