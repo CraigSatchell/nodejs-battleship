@@ -1,0 +1,21 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "Battleship game simulation",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "game",
+    "battleship",
+    "simulation",
+    "nodejs"
+  ],
+  "author": "Craig Satchell",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "prompt-sync": "^4.2.0"
+  }
+}
