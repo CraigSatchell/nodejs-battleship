@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner } = require('./helper');
 const AI = require('./classes/player/AI');
 const Human = require('./classes/player/human');
 
@@ -22,7 +22,8 @@ const promptForPlayerName = (currPlayerName) => {
 const runApplication = () => {
    let player1;
    let player2;
-   setupGame(player1, player2);
+   [player1, player2] = setupGame(player1, player2);
+   callShot(player1, isValidShotCoords);
 
 }
 
@@ -44,6 +45,7 @@ const setupGame = (player1, player2) => {
          }
          loop = false;
       }
+      return [player1, player2]  // array containing AI/Human class instances
    }
 
    player1.name = promptForPlayerName(player1.name);    // get name for player 1
@@ -51,7 +53,7 @@ const setupGame = (player1, player2) => {
       player2.name = promptForPlayerName(player2.name);    // get name for player 2
    }
 
-   console.log('\n' + indentText('E100 >> Player 1:') , player1, '\n\t\tE100 >> Player 2:', player2);
+   console.log('\n' + indentText('E100 >> Player 1:'), player1, '\n\t\tE100 >> Player 2:', player2);
 
 }
 
@@ -64,13 +66,14 @@ const placeShip = () => {
 
 
 // Prompt current player for shot using game grid coordinates
-const callShot = (validShotCallback) => {
+const callShot = (player, validShotCallback) => {
    let shot = '';
    let loop = true;
    while (loop) {
-      shot = promptFor('Enter Shot (ex. F4, A1): ').toUpperCase();
+      playGameBanner();
+      shot = promptFor(`\t\t${player.name} >> Call Shot (ex. F4, A1): `).toUpperCase();
       if (shot.length === 2 && validShotCallback(shot)) {
-         console.log(shot);
+         //console.log(shot);
          loop = false;
       }
    }
@@ -94,7 +97,7 @@ const isValidShotCoords = (shotCoords) => {
 
 // TODO: convert shot coordinates into game grid coordinates
 const convertShotCoords = (shotCoords) => {  // 
-   return 
+   return
 }
 
 
@@ -166,5 +169,5 @@ const checkShipSunk = () => {
 /********************************
  *  run code
  */
-//callShot(isValidShotCoords);     // call shot and validate player selection is valid
+
 runApplication()
