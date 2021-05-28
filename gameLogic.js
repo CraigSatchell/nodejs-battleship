@@ -1,6 +1,7 @@
 "use strict";
 
 const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName } = require('./helper');
+const { shipList1, shipList2, randShipName } = require('./shiplist');
 const AI = require('./classes/player/AI');
 const Human = require('./classes/player/human');
 
@@ -14,7 +15,7 @@ const runApplication = () => {
 
    [player1, player2] = setupGame(player1, player2);
    playGame(player1, player2);
-   console.log(player1.gameGrid);
+   console.log(player1.ships);
 }
 
 
@@ -33,6 +34,9 @@ const setupGame = (player1, player2) => {
             player1 = new Human('Player 1', initGameGrid(20,[]));
             player2 = new Human('Player 2', initGameGrid(20,[]));
          }
+
+         randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
+         randomNamePlayerShips(player2, shipList2);   // random name player 2 ships
          loop = false;
          return [player1, player2]  // array containing AI/Human class instances
       }
@@ -61,6 +65,15 @@ const playGame = (player1, player2) => {
 const placeShip = () => {
 
 }
+
+// Generate random name for player ships
+const randomNamePlayerShips = (player, shipList) => {
+   for (let i = 0; i < player.ships.length; i++){
+      player.ships[i].name = randShipName(shipList)
+   }
+
+}
+
 
 
 // Prompt current player for shot using game grid coordinates

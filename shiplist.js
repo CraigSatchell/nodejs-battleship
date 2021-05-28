@@ -12,4 +12,9 @@ const randShipName = (shipList) => {
    return ships[index]; // random ship name
 }
 
-console.log(randShipName(shipList1));
+//console.log(randShipName(shipList1));
+
+
+module.exports.randShipName = randShipName;
+module.exports.shipList1 = shipList1;
+module.exports.shipList2 = shipList2;
