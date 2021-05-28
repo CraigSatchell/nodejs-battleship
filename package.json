@@ -4,7 +4,7 @@
   "description": "Battleship game simulation",
   "main": "app.js",
   "scripts": {
-    "start": "node gameLogic.js"
+    "start": "node app.js"
   },
   "keywords": [
     "game",

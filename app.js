@@ -2,15 +2,9 @@
 
 const { pressReturn } = require("./helper");
 const Ship = require('./classes/ship/ship');
+const { runApplication } = require('./gameLogic');
 
 let gameGrid = [];
 
-
-
-//gameGrid = initGameGrid(20, []);
-
-//console.log(gameGrid);
-let ship = new Ship('HSS Samuel');
-console.log('\n\t\t', ship.name);
-
-pressReturn('Press RETURN to Quit');
+// Execute app
+runApplication();

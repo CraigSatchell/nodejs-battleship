@@ -113,7 +113,7 @@ const convertShot2GridCoords = (shotCoords) => {  //
    let len = shotCoords.length;
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    row = gridRows.indexOf(shotCoords[0]); // convert row value
-   col = parseInt(shotCoords.slice(len - 2, len)) - 1;  // convert column value
+   col = (len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1]))-1;
 
    console.log('\n\tE200 >> Game Grid Coord:', `(${row},${col})`);
    return [row, col]    // array referencing game grid row and column
@@ -204,8 +204,4 @@ const checkShipSunk = () => {
 }
 
 
-/********************************
- *  run code
- */
-
-runApplication()
+module.exports.runApplication = runApplication;
