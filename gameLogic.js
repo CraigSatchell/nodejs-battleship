@@ -11,13 +11,10 @@ const Human = require('./classes/player/human');
 const runApplication = () => {
    let player1;
    let player2;
-   let gridPlayer1 = initGameGrid();   // initialize game grid for player 1
-   let gridPlayer2 = initGameGrid();   // initialize game grid for player 2
 
    [player1, player2] = setupGame(player1, player2);
    playGame(player1, player2);
-
-
+   console.log(player1.gameGrid);
 }
 
 
@@ -30,11 +27,11 @@ const setupGame = (player1, player2) => {
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
-            player1 = new Human('Player 1', initGameGrid());
-            player2 = new AI('AI Player', initGameGrid());
+            player1 = new Human('Player 1', initGameGrid(20,[]));
+            player2 = new AI('AI Player', initGameGrid(20,[]));
          } else {
-            player1 = new Human('Player 1', initGameGrid());
-            player2 = new Human('Player 2', initGameGrid());
+            player1 = new Human('Player 1', initGameGrid(20,[]));
+            player2 = new Human('Player 2', initGameGrid(20,[]));
          }
          loop = false;
          return [player1, player2]  // array containing AI/Human class instances

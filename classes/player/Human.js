@@ -6,6 +6,7 @@ class Human extends Player {
    constructor(name, gameGrid) {
       super(name, gameGrid);
       this.isHuman = true;
+      
    }
 
 }
