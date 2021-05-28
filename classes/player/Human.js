@@ -3,8 +3,8 @@
 const Player = require('./player.js');
 
 class Human extends Player {
-   constructor(name) {
-      super(name);
+   constructor(name, gameGrid) {
+      super(name, gameGrid);
       this.isHuman = true;
    }
 

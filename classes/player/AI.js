@@ -3,11 +3,10 @@
 const Player = require('./player');
 
 class AI extends Player {
-   constructor(name) {
-      super(name);
+   constructor(name, gameGrid) {
+      super(name, gameGrid);
       this.isHuman = false;
    }
-
 }
 
 

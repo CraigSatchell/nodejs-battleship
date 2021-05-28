@@ -1,30 +1,22 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName } = require('./helper');
 const AI = require('./classes/player/AI');
 const Human = require('./classes/player/human');
 
 
-// Prompt for player name from user input
-const promptForPlayerName = (currPlayerName) => {
-   let playerName = '';
-   appBanner(appTitle);
-   console.log('\n\n');
-   playerName = promptFor(`\t\tEnter ${currPlayerName} name: `);
-   if (playerName != '') {
-      return playerName;
-   }
-   return currPlayerName;    // return string
-}
 
 
 // Run application and game simulation
 const runApplication = () => {
    let player1;
    let player2;
+   let gridPlayer1 = initGameGrid();   // initialize game grid for player 1
+   let gridPlayer2 = initGameGrid();   // initialize game grid for player 2
+
    [player1, player2] = setupGame(player1, player2);
    playGame(player1, player2);
-   //isValidShotCoords('F12');
+
 
 }
 
@@ -38,11 +30,11 @@ const setupGame = (player1, player2) => {
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
-            player1 = new Human('Player 1');
-            player2 = new AI('AI Player');
+            player1 = new Human('Player 1', initGameGrid());
+            player2 = new AI('AI Player', initGameGrid());
          } else {
-            player1 = new Human('Player 1');
-            player2 = new Human('Player 2');
+            player1 = new Human('Player 1', initGameGrid());
+            player2 = new Human('Player 2', initGameGrid());
          }
          loop = false;
          return [player1, player2]  // array containing AI/Human class instances
@@ -57,6 +49,9 @@ const setupGame = (player1, player2) => {
    console.log('\n' + indentText('E100 >> Player 1:'), player1, '\n\t\tE100 >> Player 2:', player2);
 
 }
+
+
+
 
 // Simulate game play
 const playGame = (player1, player2) => {
@@ -113,7 +108,7 @@ const convertShot2GridCoords = (shotCoords) => {  //
    let len = shotCoords.length;
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    row = gridRows.indexOf(shotCoords[0]); // convert row value
-   col = (len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1]))-1;
+   col = (len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1])) - 1;
 
    console.log('\n\tE200 >> Game Grid Coord:', `(${row},${col})`);
    return [row, col]    // array referencing game grid row and column
@@ -205,3 +200,4 @@ const checkShipSunk = () => {
 
 
 module.exports.runApplication = runApplication;
+module.exports.initGameGrid = initGameGrid;

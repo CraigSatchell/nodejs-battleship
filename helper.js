@@ -30,6 +30,18 @@ function promptGesture(label) {
    return prompt(`\t\t${label}`, { echo: '*' });
 }
 
+// Prompt for player name from user input
+const promptForPlayerName = (currPlayerName) => {
+   let playerName = '';
+   appBanner(appTitle);
+   console.log('\n\n');
+   playerName = promptFor(`\t\tEnter ${currPlayerName} name: `);
+   if (playerName != '') {
+      return playerName;
+   }
+   return currPlayerName;    // return string
+}
+
 
 function cenText(text, width = 50) {
    let padding = 0;
@@ -79,6 +91,7 @@ module.exports.cenText = cenText;
 module.exports.indentText = indentText;
 module.exports.promptGesture = promptGesture;
 module.exports.promptFor = promptFor;
+module.exports.promptForPlayerName = promptForPlayerName;
 module.exports.pressReturn = pressReturn;
 module.exports.appBanner = appBanner;
 module.exports.playGameBanner = playGameBanner;
