@@ -1,8 +1,8 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, appTitle } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle } = require('./helper');
 const AI = require('./classes/player/AI');
-const Human = require('./classes/player/Human');
+const Human = require('./classes/player/human');
 
 
 // Prompt for player name from user input
@@ -10,27 +10,32 @@ const promptForPlayerName = (currPlayerName) => {
    let playerName = '';
    appBanner(appTitle);
    console.log('\n\n');
-   playerName = promptFor("\t\tEnter player's name: ");
+   playerName = promptFor(`\t\tEnter ${currPlayerName} name: `);
    if (playerName != '') {
       return playerName;
    }
-   return currPlayerName;
+   return currPlayerName;    // return string
 }
 
 
-// TODO: run application and game simulation
+// Run application and game simulation
 const runApplication = () => {
    let player1;
    let player2;
+   setupGame(player1, player2);
+
+}
+
+
+// Setup game parameters (ex. game grid, player info, solo or two player)
+const setupGame = (player1, player2) => {
    let loop = true;
    while (loop) {
-      appBanner(appTitle);
-      console.log('\n\n');
-
-      console.log(indentText("Do you wish to player another person or"));
-      let gameMode = promptFor(indentText("solo? Enter 'P' for person or 'S' for solo: ")).toUpperCase();
+      setupGameBanner();
+      console.log(indentText("Do you wish to player solo or another person"));
+      let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
-         if (gameMode === 'P') {
+         if (gameMode === 'S') {
             player1 = new Human('Player 1');
             player2 = new AI('AI Player');
          } else {
@@ -41,16 +46,12 @@ const runApplication = () => {
       }
    }
 
-   player1 = promptForPlayerName(player1.name);    // get name for player 1
-   player2 = promptForPlayerName(player2.name);    // get name for player 2
+   player1.name = promptForPlayerName(player1.name);    // get name for player 1
+   if (player2.isHuman) {
+      player2.name = promptForPlayerName(player2.name);    // get name for player 2
+   }
 
-   console.log('\n' + indentText('Player 1:'), player1, 'Player 2:', player2);
-}
-
-
-// TODO: Setup game parameters (ex. game grid, player info, solo or two player)
-const setupGame = () => {
-
+   console.log('\n' + indentText('E100 >> Player 1:') , player1, '\n\t\tE100 >> Player 2:', player2);
 
 }
 
@@ -77,23 +78,23 @@ const callShot = (validShotCallback) => {
 
 
 // Check if player entered valid shot coordinates
-const isValidShotCoords = (arrShotCoords) => {
+const isValidShotCoords = (shotCoords) => {
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    let gridCols = 20;
-   let rowValue = arrShotCoords[0];
-   let colValue = parseInt(arrShotCoords[1]);
+   let rowValue = shotCoords[0];
+   let colValue = parseInt(shotCoords[1]);
 
    if (gridRows.includes(rowValue) && (colValue >= 1 && colValue <= gridCols)) {
       return true;
    }
-   return false;
+   return false;  // return boolean
 }
 
 
 
 // TODO: convert shot coordinates into game grid coordinates
-const convertShotCoords = (arrShotCoords) => {   // array
-
+const convertShotCoords = (shotCoords) => {  // 
+   return 
 }
 
 
@@ -161,5 +162,9 @@ const checkShipSunk = () => {
 
 }
 
+
+/********************************
+ *  run code
+ */
 //callShot(isValidShotCoords);     // call shot and validate player selection is valid
 runApplication()

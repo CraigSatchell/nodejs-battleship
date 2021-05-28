@@ -68,6 +68,12 @@ function playGameBanner() {
 
 }
 
+function setupGameBanner() {
+   appBanner(appTitle);
+   console.log(colorPrimary('\n\n\t\t' + cenText('*** GAME SETUP ***\n', 48)));
+
+}
+
 
 module.exports.cenText = cenText;
 module.exports.indentText = indentText;
@@ -76,6 +82,7 @@ module.exports.promptFor = promptFor;
 module.exports.pressReturn = pressReturn;
 module.exports.appBanner = appBanner;
 module.exports.playGameBanner = playGameBanner;
+module.exports.setupGameBanner = setupGameBanner;
 module.exports.wait = wait;
 module.exports.appTitle = appTitle;
 module.exports.colorBanner = colorBanner;
