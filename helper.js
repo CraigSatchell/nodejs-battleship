@@ -5,12 +5,12 @@ const chalk = require('chalk');
 const appTitle = 'BATTLESHIP';
 
 // ui color definitions
-const colorBanner = chalk.black.bgYellow;
-const colorPrimary = chalk.yellow;
-const colorPrimaryHighlight = chalk.black.bgYellow;
+const colorBanner = chalk.black.bgWhite;
+const colorPrimary = chalk.white;
+const colorPrimaryHighlight = chalk.black.bgWhite;
 const colorSecondary = chalk.green;
 const colorSecondaryHighlight = chalk.black.bgGreen;
-const colorInline = chalk.yellow;
+const colorInline = chalk.white;
 
 
 // wait for user to press return to continue
