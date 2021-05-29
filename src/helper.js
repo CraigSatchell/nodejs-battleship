@@ -11,6 +11,10 @@ const colorPrimaryHighlight = chalk.black.bgWhite;
 const colorSecondary = chalk.green;
 const colorSecondaryHighlight = chalk.black.bgGreen;
 const colorInline = chalk.white;
+const colorHitShot = chalk.black.bgRed;
+const colorMissShot = chalk.black.bgWhite;
+const colorShipNode = chalk.black.bgGreen;
+
 
 
 // wait for user to press return to continue
@@ -104,3 +108,6 @@ module.exports.colorPrimaryHighlight = colorPrimaryHighlight;
 module.exports.colorSecondary = colorSecondary;
 module.exports.colorSecondaryHighlight = colorSecondaryHighlight;
 module.exports.colorInline = colorInline;
+module.exports.colorShipNode = colorShipNode;
+module.exports.colorHitShot = colorHitShot;
+module.exports.colorMissShot = colorMissShot;

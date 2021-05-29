@@ -1,9 +1,10 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, colorHitShot, colorMissShot, colorShipNode } = require('./helper');
 const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
+
 
 
 
@@ -14,11 +15,12 @@ const runApplication = () => {
 
    [player1, player2] = setupGame(player1, player2);
    randPlaceShips(player1);
+   displayGameGrid(player1);
 
    //let success = placeShip(player1, 0, [2, 17], 'vertical', isAnyNodeOccuppied);
    //console.log('place ship ok?', success);
    // console.log(player1.ships[0].locNodes);
-   // console.log(player1.gameGrid);
+   console.log(player1.gameGrid);
 
    //player1.gameGrid[3][3] = 2;
    ///console.log('\n\t\tOccuppied?', isNodeOccuppied(player1, [3,1], 5, 'horizontal'));
@@ -106,9 +108,9 @@ const callShot = (player, validShotCallback) => {
 
 // Check if player entered valid shot coordinates
 const isValidShotCoords = (shotCoords) => {
-   let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
-   let gridCols = 20;
-   let len = shotCoords.length;
+   const gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
+   const gridCols = 20;
+   const len = shotCoords.length;
    let rowValue = shotCoords[0];
    let colValue = len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1]);
 
@@ -136,12 +138,28 @@ const convertShot2GridCoords = (shotCoords) => {  //
 
 const displayBattleGrid = () => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
-   console.log('\t     1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
+   console.log('\n\t     1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
    for (let i in gridLabels) {
       console.log('\t', gridLabels[i], '  *'.repeat(20));
    }
    console.log('\n');
 }
+
+
+const displayGameGrid = (player) => {
+   const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
+   console.log('\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
+
+   for (let i = 0; i < player.gameGrid.length; i++) {
+      let row = '\t' + gridLabels[i];
+      for (let j = 0; j < player.gameGrid[0].length; j++) {
+         row += '  *';
+      }
+      console.log(row);
+   }
+   console.log('\n\n');
+}
+
 
 // initialize 20x20 player's game grid
 const initGameGrid = (size) => {
@@ -154,8 +172,6 @@ const initGameGrid = (size) => {
    //console.log(grid);
    return grid;   // return game grid
 }
-
-
 
 
 // Place selected player ship on game grid
@@ -180,6 +196,64 @@ const placeShip = (player, shipArrPos, gridCoord, orientation, isAnyNodeOccuppie
 }
 
 
+
+// TODO: randomly place ships on game grid.
+const randPlaceShips = (player) => {
+   let success = false;
+   let maxRowCol = 20;
+   let randOrientation;
+   let orientation;
+   let randRow;
+   let randCol;
+
+   for (let i = 0; i < player.ships.length; i++) {
+      // random generate ship placement parameters
+      while (!success) {
+         randOrientation = Math.floor(Math.random() * 2) + 1;
+         orientation = randOrientation === 1 ? 'horizontal' : 'vertical';
+         randRow = Math.floor(Math.random() * maxRowCol);
+         randCol = Math.floor(Math.random() * maxRowCol);
+
+         success = placeShip(player, i, [randRow, randCol], orientation, isAnyNodeOccuppied); // place ship
+      }
+      success = false;
+      console.log('Ship Type:', player.ships[i].type, '\trow:', randRow, 'col:', randCol, 'orientation:', orientation);
+   }
+}
+
+
+
+
+// Check whether any items within a range of nodes are occuppied
+// on a player's game grid
+const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
+   let occuppied = false;
+   let count = 0;
+   if (orientation === 'vertical') {
+      for (let i = startNode[0]; i < (startNode[0] + rangeSize); i++) {
+         count = i;
+         if (i < 20) {
+            if (player.gameGrid[i][startNode[1]] !== '0') {
+               occuppied = true;
+               break;
+            }
+         }
+      }
+   } else if (orientation === 'horizontal') {
+      for (let i = startNode[1]; i < (startNode[1] + rangeSize); i++) {
+         count = i;
+         if (i < 20) {
+            if (player.gameGrid[startNode[0]][i] !== '0') {
+               occuppied = true;
+               break;
+            }
+         }
+      }
+   }
+   return count >= 20 ? true : occuppied;  // returns true if grid range is out of bounds
+}
+
+
 // TODO: check if player shot was a hit on opponent's game grid
 const isHit = (shotCoords, player) => {
    /*
@@ -196,6 +270,7 @@ const isHit = (shotCoords, player) => {
 
 
 }
+
 
 
 
@@ -291,59 +366,6 @@ const buildGameGrid = (player) => {
 }
 
 
-// Check whether any items within a range of nodes are occuppied
-// on a player's game grid
-const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
-   let occuppied = false;
-   let count = 0;
-   if (orientation === 'vertical') {
-      for (let i = startNode[0]; i < (startNode[0] + rangeSize); i++) {
-         count = i;
-         if (i < 20) {
-            if (player.gameGrid[i][startNode[1]] !== '0') {
-               occuppied = true;
-               break;
-            }
-         }
-      }
-   } else if (orientation === 'horizontal') {
-      for (let i = startNode[1]; i < (startNode[1] + rangeSize); i++) {
-         count = i;
-         if (i < 20) {
-            if (player.gameGrid[startNode[0]][i] !== '0') {
-               occuppied = true;
-               break;
-            }
-         }
-      }
-   }
-   return count >= 20 ? true : occuppied;  // returns true if grid range is out of bounds
-}
-
-
-
-// TODO: randomly place ships on game grid.
-const randPlaceShips = (player) => {
-   let success = false;
-   let maxRowCol = 20;
-   let randOrientation;
-   let orientation;
-   let randRow;
-   let randCol;
-
-   for (let i = 0; i < player.ships.length; i++) {
-      // random generate ship placement parameters
-      while (!success) {
-         randOrientation = Math.floor(Math.random() * 2) + 1;
-         orientation = randOrientation === 1 ? 'horizontal' : 'vertical';
-         randRow = Math.floor(Math.random() * maxRowCol);
-         randCol = Math.floor(Math.random() * maxRowCol);
-         success = placeShip(player, i, [randRow, randCol], orientation, isAnyNodeOccuppied);
-      }
-      success = false;
-      console.log('row:', randRow, 'col:', randCol, 'orientation:', orientation);
-   }
-}
 
 
 
