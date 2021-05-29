@@ -1,10 +1,9 @@
 "use strict";
 
 const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName } = require('./helper');
-const { shipList1, shipList2, randShipName } = require('./shiplist');
-const AI = require('./classes/player/AI');
-const Human = require('./classes/player/human');
-
+const { shipList1, shipList2, randShipName } = require('../shiplist');
+const AI = require('../classes/player/AI');
+const Human = require('../classes/player/human');
 
 
 
@@ -14,9 +13,13 @@ const runApplication = () => {
    let player2;
 
    [player1, player2] = setupGame(player1, player2);
-   playGame(player1, player2);
-   console.log(player1.ships);
+   //playGame(player1, player2);
+   player2.ships.forEach(ship => ship.isSunk = true);
+   //console.log('\n\t\tE300 >>', player1.ships);
+   console.log('\n\t\tE301 >>', checkForWinner(player1, player2));
+   //console.log('\n\n',player1.ships);
 }
+
 
 
 // Setup game parameters (ex. game grid, player info, solo or two player)
@@ -28,11 +31,11 @@ const setupGame = (player1, player2) => {
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
-            player1 = new Human('Player 1', initGameGrid(20,[]));
-            player2 = new AI('AI Player', initGameGrid(20,[]));
+            player1 = new Human('Player 1', initGameGrid(20, []));
+            player2 = new AI('AI Player', initGameGrid(20, []));
          } else {
-            player1 = new Human('Player 1', initGameGrid(20,[]));
-            player2 = new Human('Player 2', initGameGrid(20,[]));
+            player1 = new Human('Player 1', initGameGrid(20, []));
+            player2 = new Human('Player 2', initGameGrid(20, []));
          }
 
          randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
@@ -52,8 +55,6 @@ const setupGame = (player1, player2) => {
 }
 
 
-
-
 // Simulate game play
 const playGame = (player1, player2) => {
    let shot = callShot(player1, isValidShotCoords);
@@ -61,14 +62,27 @@ const playGame = (player1, player2) => {
 
 }
 
+
+
 // TODO: place individual player ships on game grid
-const placeShip = () => {
+const placeShip = (player, gridCoord, orientation) => {
+   /*
+      Check if range game range is occuppied
+      if occuppied
+         return occuppied = true
+      else
+         add nodes to player's ship values
+         return occupied = false
+   */
+
 
 }
 
+
+
 // Generate random name for player ships
 const randomNamePlayerShips = (player, shipList) => {
-   for (let i = 0; i < player.ships.length; i++){
+   for (let i = 0; i < player.ships.length; i++) {
       player.ships[i].name = randShipName(shipList)
    }
 
@@ -91,6 +105,7 @@ const callShot = (player, validShotCallback) => {
    }
    return shot    // string containing called shot
 }
+
 
 
 // Check if player entered valid shot coordinates
@@ -137,7 +152,7 @@ const displayBattleGrid = () => {
 
 const initGameGrid = (rows, grid) => {
    if (rows > 0) {
-      grid.push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      grid.push(['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']);
       initGameGrid(rows - 1, grid);
    }
    return grid;
@@ -145,38 +160,83 @@ const initGameGrid = (rows, grid) => {
 
 
 // TODO: check if player shot was a hit on opponent's game grid
-const checkForHit = () => {
+const checkForHit = (shotCoords, player) => {
+   /*
+      check opponent's game grid for hit
+      if hit
+         mark opponent's game grid with hit
+         check if ship sunk
+         display status message to console
+      else
+         mark miss
+   */
+
+
+
 
 }
 
 
 // TODO: mark shot as hit on opponent's game grid
-const markHit = () => {
+const markHit = (shotCoords, player) => {
+   /*
+      mark opponent's game grid with hit indicator
+   */
 
 
 }
+
 
 
 // TODO: mark shot as miss on opponent's game grid
 const markMiss = () => {
+   /*
+      mark opponent's game grid with hit indicator
+   */
+
 
 }
+
+
+
+
 
 // TODO: display current game statistics (i.e, hits, misses, ships sunk, ships damaged, etc)
-const displayGameStats = () => {
+const displayGameStats = (player1, player2) => {
+   /*
+      display in game statistic (ex. hits, shots, misses, ships damaged, ships sunk, etc)
+   */
+
 
 }
 
-// TODO: Check for game winner after each shot inwhich there was a hit.
-const checkForWinner = () => {
 
+
+// Check for game winner after each shot in which there was a hit.
+const checkForWinner = (player1, player2) => {  // player instances
+   let playerAllSunk;
+
+   // checks, player.ships[].isSunk prop for each ship
+   playerAllSunk = player1.ships.every(ship => ship.isSunk) ? player1 : null;
+   if (playerAllSunk === null) {
+      playerAllSunk = player2.ships.every(ship => ship.isSunk) ? player2 : null;
+   }
+
+   return playerAllSunk;   // return player instances or null, if no winner was detected
 }
+
+
 
 
 // TODO: show relavent event message after each shot whether hit, missed, ship sunk or damaged
-const showCommentary = () => {
+const showCommentary = (messages, msgType) => {
+   /*
+      console.log random game play message (ex. 'ha ha! you missed...)
+   */
 
 }
+
+
 
 
 // TODO: show game grid for selected player
@@ -185,26 +245,58 @@ const showGameGrid = () => {
 }
 
 
+
+
 // TODO: hide game grid for selected player
 const hideGameGrid = () => {
+   /*
+      hide opponent's game grid on demand
+   */
+
 
 }
+
 
 
 // TODO: build game grid with relavent markings and status indicators
-const buildGameGrid = () => {
+const buildGameGrid = (player) => {
+   /*
+      build opponent's game grid
+      populate node with hits, misses, ship placement
+   */
 
+   // return gameGrid;  
 }
+
+
+
 
 // TODO: randomly place ships on game grid.
-const randPlaceShips = () => {
+const randPlaceShips = (player) => {
+   /*
+      random select shot coords and orientation
+      check if shot coords are occuppied
+         place ship
+      else
+         loop random select
+   */
+
+
 
 }
+
+
 
 
 
 // TODO: check if ship has been sunk
 const checkShipSunk = () => {
+   /*
+   
+   */
+
+
+
 
 }
 

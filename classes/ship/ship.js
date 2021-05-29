@@ -6,7 +6,7 @@ class Ship {
       this.size = 0;
       this.hits = 0;
       this.orientation = '';
-      this.locStartPos = [];
+      this.locNodes = [];
       this.locHits = [];
       this.locMisses = [];
       this.isSunk = false;
