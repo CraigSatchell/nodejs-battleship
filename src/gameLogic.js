@@ -16,7 +16,7 @@ const runApplication = () => {
    //playGame(player1, player2);
    player2.ships.forEach(ship => ship.isSunk = true);
    //console.log('\n\t\tE300 >>', player1.ships);
-   console.log('\n\t\tE301 >>', checkForWinner(player1, player2));
+   console.log('\n\t\tE301 >>', isWinner(player1, player2));
    //console.log('\n\n',player1.ships);
 }
 
@@ -64,28 +64,12 @@ const playGame = (player1, player2) => {
 
 
 
-// TODO: place individual player ships on game grid
-const placeShip = (player, gridCoord, orientation) => {
-   /*
-      Check if range game range is occuppied
-      if occuppied
-         return occuppied = true
-      else
-         add nodes to player's ship values
-         return occupied = false
-   */
-
-
-}
-
-
-
 // Generate random name for player ships
 const randomNamePlayerShips = (player, shipList) => {
    for (let i = 0; i < player.ships.length; i++) {
       player.ships[i].name = randShipName(shipList)
    }
-
+   
 }
 
 
@@ -117,7 +101,7 @@ const isValidShotCoords = (shotCoords) => {
    let colValue = len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1]);
    // console.log(colValue);
    // pressReturn();
-
+   
    if (gridRows.includes(rowValue) && (colValue >= 1 && colValue <= gridCols)) {
       return true;
    }
@@ -134,7 +118,7 @@ const convertShot2GridCoords = (shotCoords) => {  //
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    row = gridRows.indexOf(shotCoords[0]); // convert row value
    col = (len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1])) - 1;
-
+   
    console.log('\n\tE200 >> Game Grid Coord:', `(${row},${col})`);
    return [row, col]    // array referencing game grid row and column
 }
@@ -149,32 +133,51 @@ const displayBattleGrid = () => {
    console.log('\n');
 }
 
-
+// initialize 20x20 player's game grid
 const initGameGrid = (rows, grid) => {
    if (rows > 0) {
       grid.push(['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']);
       initGameGrid(rows - 1, grid);
    }
-   return grid;
+   return grid;   // return game grid
 }
+
+
+
+
+// TODO: place individual player ships on game grid
+const placeShip = (player, gridCoord, orientation) => {
+   /*
+   Check if range game range is occuppied
+   if occuppied
+   return occuppied = true
+   else
+   add nodes to player's ship values
+   return occupied = false
+   */
+  
+  
+}
+
 
 
 // TODO: check if player shot was a hit on opponent's game grid
-const checkForHit = (shotCoords, player) => {
+const isHit = (shotCoords, player) => {
    /*
-      check opponent's game grid for hit
-      if hit
-         mark opponent's game grid with hit
-         check if ship sunk
-         display status message to console
-      else
-         mark miss
+   check opponent's game grid for hit
+   if hit
+   mark opponent's game grid with hit
+   check if ship sunk
+   display status message to console
+   else
+   mark miss
    */
-
-
-
-
+  
+  
+  
+  
 }
+
 
 
 // TODO: mark shot as hit on opponent's game grid
@@ -213,7 +216,7 @@ const displayGameStats = (player1, player2) => {
 
 
 // Check for game winner after each shot in which there was a hit.
-const checkForWinner = (player1, player2) => {  // player instances
+const isWinner = (player1, player2) => {  // player instances
    let playerAllSunk;
 
    // checks, player.ships[].isSunk prop for each ship
@@ -269,6 +272,13 @@ const buildGameGrid = (player) => {
 }
 
 
+// TODO: check whether any items within a range of nodes are occuppied
+// on a player's game grid
+const isNodesOccuppied = () => {
+
+   
+}
+
 
 
 // TODO: randomly place ships on game grid.
@@ -287,17 +297,9 @@ const randPlaceShips = (player) => {
 
 
 
-
-
 // TODO: check if ship has been sunk
-const checkShipSunk = () => {
-   /*
+const isShipSunk = (player) => {
    
-   */
-
-
-
-
 }
 
 
