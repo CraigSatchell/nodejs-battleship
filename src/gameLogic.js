@@ -15,12 +15,12 @@ const runApplication = () => {
    [player1, player2] = setupGame(player1, player2);
    //
    player1.gameGrid[3][3] = 2;
-   //console.log('\n\t\tOccuppied?', isNodeOccuppied(player1, [3,1], 5, 'horizontal'));
-   //playGame(player1, player2);
-   //player2.ships.forEach(ship => ship.isSunk = true);
-   //console.log('\n\t\tE300 >>', player1.ships);
-   //console.log('\n\t\tE301 >>', isWinner(player1, player2));
-   //console.log('\n\n',player1.ships);
+   ///console.log('\n\t\tOccuppied?', isNodeOccuppied(player1, [3,1], 5, 'horizontal'));
+   ///playGame(player1, player2);
+   ///player2.ships.forEach(ship => ship.isSunk = true);
+   console.log('\n\t\tE300 >>', player1.ships);
+   ///console.log('\n\t\tE301 >>', isWinner(player1, player2));
+   ///console.log('\n\n',player1.ships);
 }
 
 
@@ -53,7 +53,7 @@ const setupGame = (player1, player2) => {
       player2.name = promptForPlayerName(player2.name);    // get name for player 2
    }
 
-   console.log('\n' + indentText('E100 >> Player 1:'), player1, '\n\t\tE100 >> Player 2:', player2);
+   //console.log('\n' + indentText('E100 >> Player 1:'), player1, '\n\t\tE100 >> Player 2:', player2);
 
    return [player1, player2]  // array containing AI/Human class instances
 }
@@ -103,8 +103,6 @@ const isValidShotCoords = (shotCoords) => {
    let len = shotCoords.length;
    let rowValue = shotCoords[0];
    let colValue = len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1]);
-   // console.log(colValue);
-   // pressReturn();
 
    if (gridRows.includes(rowValue) && (colValue >= 1 && colValue <= gridCols)) {
       return true;
@@ -139,18 +137,13 @@ const displayBattleGrid = () => {
 
 // initialize 20x20 player's game grid
 const initGameGrid = (size) => {
-   // if (rows > 0) {
-   //    grid.push(['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']);
-   //    initGameGrid(rows - 1, grid);
-   // }
-
    let grid = new Array(size); // create an empty array of length n
    for (var i = 0; i < size; i++) {
       grid[i] = new Array(size); // make each element an array
       grid[i].fill('0');
    }
 
-   console.log(grid);
+   //console.log(grid);
    return grid;   // return game grid
 }
 
@@ -284,7 +277,7 @@ const buildGameGrid = (player) => {
 }
 
 
-// TODO: check whether any items within a range of nodes are occuppied
+// Check whether any items within a range of nodes are occuppied
 // on a player's game grid
 const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
    let occuppied = false;

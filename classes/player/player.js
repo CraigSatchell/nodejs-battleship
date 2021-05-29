@@ -12,7 +12,7 @@ class Player {
       this.name = name;
       this.isHuman = true;
       this.gameGrid = gameGrid;
-      this.ships = [new BattleShip(), new BattleShip(), new Carrier, new Destroyer, new Submarine ];
+      this.ships = [new BattleShip('','B1'), new BattleShip('','B2'), new Carrier('','C1'), new Destroyer('','D1'), new Submarine('','S1') ];
    }
 }
 

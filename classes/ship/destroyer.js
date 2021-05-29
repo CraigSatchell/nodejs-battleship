@@ -3,8 +3,8 @@
 const Ship = require('./ship');
 
 class Destroyer extends Ship {
-   constructor() {
-      super();
+   constructor(name, id) {
+      super(name, id);
       this.type = 'destroyer';
       this.size = 2;
    }
