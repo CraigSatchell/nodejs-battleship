@@ -13,10 +13,13 @@ const runApplication = () => {
    let player2;
 
    [player1, player2] = setupGame(player1, player2);
+   //
+   player1.gameGrid[3][3] = 2;
+   //console.log('\n\t\tOccuppied?', isNodeOccuppied(player1, [3,1], 5, 'horizontal'));
    //playGame(player1, player2);
-   player2.ships.forEach(ship => ship.isSunk = true);
+   //player2.ships.forEach(ship => ship.isSunk = true);
    //console.log('\n\t\tE300 >>', player1.ships);
-   console.log('\n\t\tE301 >>', isWinner(player1, player2));
+   //console.log('\n\t\tE301 >>', isWinner(player1, player2));
    //console.log('\n\n',player1.ships);
 }
 
@@ -31,17 +34,17 @@ const setupGame = (player1, player2) => {
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
-            player1 = new Human('Player 1', initGameGrid(20, []));
-            player2 = new AI('AI Player', initGameGrid(20, []));
+            player1 = new Human('Player 1', initGameGrid(20));
+            player2 = new AI('AI Player', initGameGrid(20));
          } else {
-            player1 = new Human('Player 1', initGameGrid(20, []));
-            player2 = new Human('Player 2', initGameGrid(20, []));
+            player1 = new Human('Player 1', initGameGrid(20));
+            player2 = new Human('Player 2', initGameGrid(20));
          }
 
          randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
          randomNamePlayerShips(player2, shipList2);   // random name player 2 ships
          loop = false;
-         return [player1, player2]  // array containing AI/Human class instances
+         //return [player1, player2]  // array containing AI/Human class instances
       }
    }
 
@@ -52,6 +55,7 @@ const setupGame = (player1, player2) => {
 
    console.log('\n' + indentText('E100 >> Player 1:'), player1, '\n\t\tE100 >> Player 2:', player2);
 
+   return [player1, player2]  // array containing AI/Human class instances
 }
 
 
@@ -69,7 +73,7 @@ const randomNamePlayerShips = (player, shipList) => {
    for (let i = 0; i < player.ships.length; i++) {
       player.ships[i].name = randShipName(shipList)
    }
-   
+
 }
 
 
@@ -101,7 +105,7 @@ const isValidShotCoords = (shotCoords) => {
    let colValue = len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1]);
    // console.log(colValue);
    // pressReturn();
-   
+
    if (gridRows.includes(rowValue) && (colValue >= 1 && colValue <= gridCols)) {
       return true;
    }
@@ -118,7 +122,7 @@ const convertShot2GridCoords = (shotCoords) => {  //
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    row = gridRows.indexOf(shotCoords[0]); // convert row value
    col = (len === 3 ? parseInt(shotCoords.slice(len - 2, len)) : parseInt(shotCoords[1])) - 1;
-   
+
    console.log('\n\tE200 >> Game Grid Coord:', `(${row},${col})`);
    return [row, col]    // array referencing game grid row and column
 }
@@ -134,11 +138,19 @@ const displayBattleGrid = () => {
 }
 
 // initialize 20x20 player's game grid
-const initGameGrid = (rows, grid) => {
-   if (rows > 0) {
-      grid.push(['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']);
-      initGameGrid(rows - 1, grid);
+const initGameGrid = (size) => {
+   // if (rows > 0) {
+   //    grid.push(['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']);
+   //    initGameGrid(rows - 1, grid);
+   // }
+
+   let grid = new Array(size); // create an empty array of length n
+   for (var i = 0; i < size; i++) {
+      grid[i] = new Array(size); // make each element an array
+      grid[i].fill('0');
    }
+
+   console.log(grid);
    return grid;   // return game grid
 }
 
@@ -155,8 +167,8 @@ const placeShip = (player, gridCoord, orientation) => {
    add nodes to player's ship values
    return occupied = false
    */
-  
-  
+
+
 }
 
 
@@ -172,10 +184,10 @@ const isHit = (shotCoords, player) => {
    else
    mark miss
    */
-  
-  
-  
-  
+
+
+
+
 }
 
 
@@ -274,9 +286,31 @@ const buildGameGrid = (player) => {
 
 // TODO: check whether any items within a range of nodes are occuppied
 // on a player's game grid
-const isNodesOccuppied = () => {
-
-   
+const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
+   let occuppied = false;
+   let count = 0;
+   if (orientation === 'vertical') {
+      for (let i = startNode[0]; i < (startNode[0] + rangeSize) && i < 20; i++) {
+         count++;
+         if (i < 20) {
+            if (player.gameGrid[i][startNode[1]] !== '0') {
+               occuppied = true;
+               break;
+            }
+         }
+      }
+   } else if (orientation === 'horizontal') {
+      for (let i = startNode[1]; i < (startNode[1] + rangeSize) && i < 20; i++) {
+         count++;
+         if (i < 20) {
+            if (player.gameGrid[startNode[0]][i] !== '0') {
+               occuppied = true;
+               break;
+            }
+         }
+      }
+   }
+   return count >= 20 ? true : occuppied;  // returns true if grid range is out of bounds
 }
 
 
@@ -299,7 +333,7 @@ const randPlaceShips = (player) => {
 
 // TODO: check if ship has been sunk
 const isShipSunk = (player) => {
-   
+
 }
 
 
