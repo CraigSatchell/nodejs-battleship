@@ -5,7 +5,7 @@ const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
 
-
+const gridSize = 20;    // global variable for battle grid size
 
 
 // Run application and game simulation
@@ -48,11 +48,11 @@ const setupGame = (player1, player2) => {
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
-            player1 = new Human('Player 1', initBattleGrid(20));
-            player2 = new AI('AI Player', initBattleGrid(20));
+            player1 = new Human('Player 1', initBattleGrid(gridSize));
+            player2 = new AI('AI Player', initBattleGrid(gridSize));
          } else {
-            player1 = new Human('Player 1', initBattleGrid(20));
-            player2 = new Human('Player 2', initBattleGrid(20));
+            player1 = new Human('Player 1', initBattleGrid(gridSize));
+            player2 = new Human('Player 2', initBattleGrid(gridSize));
          }
 
          randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
@@ -113,8 +113,8 @@ const callShot = (player, validShotCallback) => {
 
 // Call random shot coordinates
 const callRandShot = (player) => {
-   let row = Math.floor(Math.random() * 20);
-   let col = Math.floor(Math.random() * 20);
+   let row = Math.floor(Math.random() * gridSize);
+   let col = Math.floor(Math.random() * gridSize);
    return [row, col]    // return grid coords
 }
 
@@ -123,7 +123,7 @@ const callRandShot = (player) => {
 // Check if player entered valid shot coordinates
 const isValidShotCoord = (shotCoord) => {
    const gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
-   const gridCols = 20;
+   const gridCols = gridSize;
    const len = shotCoord.length;
    let rowValue = shotCoord[0];
    let colValue = len === 3 ? parseInt(shotCoord.slice(len - 2, len)) : parseInt(shotCoord[1]);
@@ -179,7 +179,6 @@ const viewBattleGridPlayer = (player) => {
 
 
 
-
 const viewBattleGridOpponent = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
    console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
@@ -205,7 +204,7 @@ const viewBattleGridOpponent = (player) => {
 
 
 
-// initialize 20x20 player's battle grid
+// initialize player's battle grid
 const initBattleGrid = (size) => {
    let grid = new Array(size); // create an empty array of length n
    for (var i = 0; i < size; i++) {
@@ -246,7 +245,7 @@ const placeShip = (player, shipArrPos, gridCoord, orientation, isAnyNodeOccuppie
 // Randomly place ships on battle grid.
 const randPlaceShips = (player) => {
    let success = false;
-   let maxRowCol = 20;
+   let maxRowCol = gridSize;
    let randOrientation;
    let orientation;
    let randRow;
@@ -275,7 +274,7 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
    if (orientation === 'vertical') {
       for (let i = startNode[0]; i < (startNode[0] + rangeSize); i++) {
          count = i;
-         if (i < 20) {
+         if (i < gridSize) {
             if (player.battleGrid[i][startNode[1]] !== '0') {
                occuppied = true;
                break;
@@ -285,7 +284,7 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
    } else if (orientation === 'horizontal') {
       for (let i = startNode[1]; i < (startNode[1] + rangeSize); i++) {
          count = i;
-         if (i < 20) {
+         if (i < gridSize) {
             if (player.battleGrid[startNode[0]][i] !== '0') {
                occuppied = true;
                break;
@@ -293,7 +292,7 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
          }
       }
    }
-   return count >= 20 ? true : occuppied;  // returns true if grid range is out of bounds
+   return count >= gridSize ? true : occuppied;  // returns true if grid range is out of bounds
 }
 
 
