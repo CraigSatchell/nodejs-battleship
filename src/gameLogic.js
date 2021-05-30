@@ -18,7 +18,7 @@ const runApplication = () => {
    //let success = placeShip(player1, 0, [2, 17], 'vertical', isAnyNodeOccuppied);
    //let hit = isHit([3, 17], player1);
    //hit = isHit([2, 5], player1);
-   viewGameGridPlayer(player1);
+   viewBattleGridPlayer(player1);
    for (let i in player1.ships) {
       player1.ships[i].isSunk = true;
    }
@@ -45,11 +45,11 @@ const setupGame = (player1, player2) => {
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
-            player1 = new Human('Player 1', initGameGrid(20));
-            player2 = new AI('AI Player', initGameGrid(20));
+            player1 = new Human('Player 1', initBattleGrid(20));
+            player2 = new AI('AI Player', initBattleGrid(20));
          } else {
-            player1 = new Human('Player 1', initGameGrid(20));
-            player2 = new Human('Player 2', initGameGrid(20));
+            player1 = new Human('Player 1', initBattleGrid(20));
+            player2 = new Human('Player 2', initBattleGrid(20));
          }
 
          randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
@@ -96,7 +96,7 @@ const callShot = (player, validShotCallback) => {
    let loop = true;
    while (loop) {
       playGameBanner();
-      showGameGrid();    // display battle grid
+      showBattleGrid();    // display battle grid
       shot = promptFor('\t\t\t' + player.name + ' >> Call Shot (ex. F4, A1): ').toUpperCase();
       if (shot.length <= 3 && validShotCallback(shot)) {
          //console.log(shot);
@@ -148,21 +148,21 @@ const displayBattleGrid = () => {
 }
 
 
-const viewGameGridPlayer = (player) => {
+const viewBattleGridPlayer = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
    console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
 
-   for (let i = 0; i < player.gameGrid.length; i++) {
+   for (let i = 0; i < player.battleGrid.length; i++) {
       let row = '\t' + gridLabels[i];
-      for (let j = 0; j < player.gameGrid[0].length; j++) {
-         if (player.gameGrid[i][j] === '0') {
+      for (let j = 0; j < player.battleGrid[0].length; j++) {
+         if (player.battleGrid[i][j] === '0') {
             row += '  *';
-         } else if (player.gameGrid[i][j] === 'XX') {
-            row += ' ' + colorMissShot(player.gameGrid[i][j])
-         } else if (player.gameGrid[i][j].includes('X')) {
-            row += ' ' + colorHitShot(player.gameGrid[i][j])
+         } else if (player.battleGrid[i][j] === 'XX') {
+            row += ' ' + colorMissShot(player.battleGrid[i][j])
+         } else if (player.battleGrid[i][j].includes('X')) {
+            row += ' ' + colorHitShot(player.battleGrid[i][j])
          } else {
-            row += ' ' + colorShipNode(player.gameGrid[i][j])
+            row += ' ' + colorShipNode(player.battleGrid[i][j])
          }
       }
       console.log(row);
@@ -177,7 +177,7 @@ const viewGameGridPlayer = (player) => {
 
 
 // initialize 20x20 player's game grid
-const initGameGrid = (size) => {
+const initBattleGrid = (size) => {
    let grid = new Array(size); // create an empty array of length n
    for (var i = 0; i < size; i++) {
       grid[i] = new Array(size); // make each element an array
@@ -195,14 +195,14 @@ const placeShip = (player, shipArrPos, gridCoord, orientation, isAnyNodeOccuppie
 
       if (orientation === 'vertical') {   // vertical ship placement
          for (let i = gridCoord[0]; i < (gridCoord[0] + player.ships[shipArrPos].size); i++) {
-            player.gameGrid[i][gridCoord[1]] = player.ships[shipArrPos].id; // populate game grid with ship id value
+            player.battleGrid[i][gridCoord[1]] = player.ships[shipArrPos].id; // populate game grid with ship id value
             player.ships[shipArrPos].locNodes.push([i, gridCoord[1]]);  // add grid coords to ship node props
             player.ships[shipArrPos].orientation = 'vertical';
          }
 
       } else if (orientation === 'horizontal') {   // horizontal ship placement
          for (let i = gridCoord[1]; i < (gridCoord[1] + player.ships[shipArrPos].size); i < i++) {
-            player.gameGrid[gridCoord[0]][i] = player.ships[shipArrPos].id; // populate game grid with ship id value
+            player.battleGrid[gridCoord[0]][i] = player.ships[shipArrPos].id; // populate game grid with ship id value
             player.ships[shipArrPos].locNodes.push([gridCoord[0], i]);  // add grid coords to ship node props
             player.ships[shipArrPos].orientation = 'horizontal';
          }
@@ -247,7 +247,7 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
       for (let i = startNode[0]; i < (startNode[0] + rangeSize); i++) {
          count = i;
          if (i < 20) {
-            if (player.gameGrid[i][startNode[1]] !== '0') {
+            if (player.battleGrid[i][startNode[1]] !== '0') {
                occuppied = true;
                break;
             }
@@ -257,7 +257,7 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
       for (let i = startNode[1]; i < (startNode[1] + rangeSize); i++) {
          count = i;
          if (i < 20) {
-            if (player.gameGrid[startNode[0]][i] !== '0') {
+            if (player.battleGrid[startNode[0]][i] !== '0') {
                occuppied = true;
                break;
             }
@@ -270,7 +270,7 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
 
 // Check if player shot was a hit on opponent's game grid
 const isHit = (gridCoord, player) => {
-   if (player.gameGrid[gridCoord[0]][gridCoord[1]] !== '0') {
+   if (player.battleGrid[gridCoord[0]][gridCoord[1]] !== '0') {
       console.log('\n\t\tBoom!');
       markHit(gridCoord, player);   // mark hit on player's game grid
       return true;
@@ -283,12 +283,12 @@ const isHit = (gridCoord, player) => {
 
 // Mark shot as hit on opponent's game grid
 const markHit = (gridCoord, player) => {
-   let gridValue = player.gameGrid[gridCoord[0]][gridCoord[1]];
+   let gridValue = player.battleGrid[gridCoord[0]][gridCoord[1]];
    let ship = player.ships.find((ship) => ship.id === gridValue);
 
    ship.locHits.push(gridCoord);    // add grid coord to ship instance locHits props
    ship.hits += 1;   // increment ship instance hit indicator
-   player.gameGrid[gridCoord[0]][gridCoord[1]] = player.gameGrid[gridCoord[0]][gridCoord[1]][0] + 'X' // mark player's game grid with hit indicator
+   player.battleGrid[gridCoord[0]][gridCoord[1]] = player.battleGrid[gridCoord[0]][gridCoord[1]][0] + 'X' // mark player's game grid with hit indicator
    
    // check whether ship is sunk
    if (isShipSunk(ship)) {
@@ -300,7 +300,7 @@ const markHit = (gridCoord, player) => {
 
 // Mark shot as miss on opponent's game grid
 const markMiss = (gridCoord, player) => {
-   player.gameGrid[gridCoord[0]][gridCoord[1]] = 'XX';
+   player.battleGrid[gridCoord[0]][gridCoord[1]] = 'XX';
 }
 
 
@@ -346,7 +346,7 @@ const showCommentary = (messages, msgType) => {
 
 
 // TODO: show game grid for selected player
-const showGameGrid = () => {
+const showBattleGrid = () => {
    displayBattleGrid();
 }
 
@@ -362,4 +362,4 @@ const isShipSunk = (ship) => {
 
 
 module.exports.runApplication = runApplication;
-module.exports.initGameGrid = initGameGrid;
+module.exports.initBattleGrid = initBattleGrid;
