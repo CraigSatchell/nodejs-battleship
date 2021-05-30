@@ -15,23 +15,25 @@ const runApplication = () => {
 
    [player1, player2] = setupGame(player1, player2);
    //randPlaceShips(player1);
-   let success = placeShip(player1, 0, [2, 17], 'vertical', isAnyNodeOccuppied);
-   let hit = isHit([3, 17], player1);
-   hit = isHit([2, 5], player1);
+   //let success = placeShip(player1, 0, [2, 17], 'vertical', isAnyNodeOccuppied);
+   //let hit = isHit([3, 17], player1);
+   //hit = isHit([2, 5], player1);
    viewGameGridPlayer(player1);
+   for (let i in player1.ships) {
+      player1.ships[i].isSunk = true;
+   }
+   if (allSunkPlayer(player1, player2) === player1) {
+      console.log('\n\tCongratulation! ' + player2.name + ', you are the winner!');
+   } else if (allSunkPlayer(player1, player2) === player2) {
+      console.log('\n\tCongratulation! ' + player1.name + ', you are the winner!');
+      
+   }
+
    //console.log('place ship ok?', success);
-   // console.log(player1.ships[0].locNodes);
-   
+   //console.log(player1.ships[0].locNodes);
 
-   //player1.gameGrid[3][3] = 2;
-   ///console.log('\n\t\tOccuppied?', isNodeOccuppied(player1, [3,1], 5, 'horizontal'));
-   ///playGame(player1, player2);
-   ///player2.ships.forEach(ship => ship.isSunk = true);
-   //console.log('\n\t\tE300 >>', player1.ships);
-   ///console.log('\n\t\tE301 >>', isWinner(player1, player2));
-console.log('\n\n',player1.ships);
 }
-
+   
 
 
 // Setup game parameters (ex. game grid, player info, solo or two player)
@@ -39,7 +41,7 @@ const setupGame = (player1, player2) => {
    let loop = true;
    while (loop) {
       setupGameBanner();
-      console.log(indentText("Do you wish to play solo or with another person? "));
+      console.log(indentText("Do you wish to play solo or against another person? "));
       let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
@@ -236,8 +238,6 @@ const randPlaceShips = (player) => {
 }
 
 
-
-
 // Check whether any items within a range of nodes are occuppied
 // on a player's game grid
 const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
@@ -281,8 +281,6 @@ const isHit = (gridCoord, player) => {
 }
 
 
-
-
 // Mark shot as hit on opponent's game grid
 const markHit = (gridCoord, player) => {
    let gridValue = player.gameGrid[gridCoord[0]][gridCoord[1]];
@@ -291,7 +289,11 @@ const markHit = (gridCoord, player) => {
    ship.locHits.push(gridCoord);    // add grid coord to ship instance locHits props
    ship.hits += 1;   // increment ship instance hit indicator
    player.gameGrid[gridCoord[0]][gridCoord[1]] = player.gameGrid[gridCoord[0]][gridCoord[1]][0] + 'X' // mark player's game grid with hit indicator
-
+   
+   // check whether ship is sunk
+   if (isShipSunk(ship)) {
+      ship.isSunk = true;
+   }
 }
 
 
@@ -299,9 +301,6 @@ const markHit = (gridCoord, player) => {
 // Mark shot as miss on opponent's game grid
 const markMiss = (gridCoord, player) => {
    player.gameGrid[gridCoord[0]][gridCoord[1]] = 'XX';
-
-
-
 }
 
 
@@ -320,7 +319,7 @@ const displayGameStats = (player1, player2) => {
 
 
 // Check for game winner after each shot in which there was a hit.
-const isWinner = (player1, player2) => {  // player instances
+const allSunkPlayer = (player1, player2) => {  // player instances
    let playerAllSunk;
 
    // checks, player.ships[].isSunk prop for each ship
@@ -353,35 +352,12 @@ const showGameGrid = () => {
 
 
 
-
-// TODO: hide game grid for selected player
-const hideGameGrid = () => {
-   /*
-      hide opponent's game grid on demand
-   */
-
-
-}
-
-
-
-// TODO: build game grid with relavent markings and status indicators
-const buildGameGrid = (player) => {
-   /*
-      build opponent's game grid
-      populate node with hits, misses, ship placement
-   */
-
-   // return gameGrid;  
-}
-
-
-
-
-
-// TODO: check if ship has been sunk
-const isShipSunk = (player) => {
-
+// Check if ship has been sunk
+const isShipSunk = (ship) => {
+   if (ship.size === ship.hits || ship.isSunk === true) {
+      return true;
+   }
+   return false;
 }
 
 
