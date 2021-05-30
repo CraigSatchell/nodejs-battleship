@@ -99,7 +99,7 @@ const callShot = (player, validShotCallback) => {
    let loop = true;
    while (loop) {
       playGameBanner();
-      showBattleGrid();    // display battle grid
+      showBattleGrid(player);    // display battle grid
       shot = promptFor('\t\t\t' + player.name + ' >> Call Shot (ex. F4, A1): ').toUpperCase();
       if (shot.length <= 3 && validShotCallback(shot)) {
          //console.log(shot);
@@ -112,7 +112,7 @@ const callShot = (player, validShotCallback) => {
 
 
 // Call random shot coordinates
-const callRandShot = (player){
+const callRandShot = (player) => {
    let row = Math.floor(Math.random() * 20);
    let col = Math.floor(Math.random() * 20);
    return [row, col]    // return grid coords
@@ -375,8 +375,8 @@ const showCommentary = (messages, msgType) => {
 
 
 // TODO: show battle grid for selected player
-const showBattleGrid = () => {
-   displayBattleGrid();
+const showBattleGrid = (player) => {
+   viewBattleGridOpponent(player);     // view opponent's battle grid
 }
 
 
