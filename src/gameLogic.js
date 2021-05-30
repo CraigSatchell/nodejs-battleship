@@ -15,12 +15,12 @@ const runApplication = () => {
 
    [player1, player2] = setupGame(player1, player2);
    randPlaceShips(player1);
-   displayGameGrid(player1);
+   viewGameGridPlayer(player1);
 
    //let success = placeShip(player1, 0, [2, 17], 'vertical', isAnyNodeOccuppied);
    //console.log('place ship ok?', success);
    // console.log(player1.ships[0].locNodes);
-   console.log(player1.gameGrid);
+   //console.log(player1.gameGrid);
 
    //player1.gameGrid[3][3] = 2;
    ///console.log('\n\t\tOccuppied?', isNodeOccuppied(player1, [3,1], 5, 'horizontal'));
@@ -146,14 +146,18 @@ const displayBattleGrid = () => {
 }
 
 
-const displayGameGrid = (player) => {
+const viewGameGridPlayer = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
-   console.log('\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
+   console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
 
    for (let i = 0; i < player.gameGrid.length; i++) {
       let row = '\t' + gridLabels[i];
       for (let j = 0; j < player.gameGrid[0].length; j++) {
-         row += '  *';
+         if (player.gameGrid[i][j] === '0') {
+            row += '  *';
+         } else {
+            row += ' ' + colorShipNode(player.gameGrid[i][j])
+         }
       }
       console.log(row);
    }
