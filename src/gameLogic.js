@@ -161,6 +161,11 @@ const viewGameGridPlayer = (player) => {
       }
       console.log(row);
    }
+   // display legend
+   console.log('\n\n'+cenText('*** SHIP LEGEND ***\n',76));
+   for (let i in player.ships) {
+      console.log('\t', player.ships[i].id, '  - ', player.ships[i].name + ' ('+player.ships[i].type + ')');
+   }
    console.log('\n\n');
 }
 
@@ -209,7 +214,6 @@ const randPlaceShips = (player) => {
    let orientation;
    let randRow;
    let randCol;
-
    for (let i = 0; i < player.ships.length; i++) {
       // random generate ship placement parameters
       while (!success) {
@@ -221,7 +225,7 @@ const randPlaceShips = (player) => {
          success = placeShip(player, i, [randRow, randCol], orientation, isAnyNodeOccuppied); // place ship
       }
       success = false;
-      console.log('Ship Type:', player.ships[i].type, '\trow:', randRow, 'col:', randCol, 'orientation:', orientation);
+      //console.log('Ship Type:', player.ships[i].type, '\trow:', randRow, 'col:', randCol, 'orientation:', orientation);
    }
 }
 
