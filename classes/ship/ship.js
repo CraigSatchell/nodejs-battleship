@@ -9,7 +9,6 @@ class Ship {
       this.orientation = '';
       this.locNodes = [];
       this.locHits = [];
-      this.locMisses = [];
       this.isSunk = false;
       this.type = 'unknown';
    }
