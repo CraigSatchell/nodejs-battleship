@@ -91,7 +91,7 @@ function appBanner(appTitle) {
 
 function playGameBanner() {
    appBanner(appTitle);
-   console.log(colorPrimary('\n\n\t\t' + cenText('*** PLAY GAME ***\n', 46)));
+   console.log(colorPrimary('\n\n\t\t' + cenText('*** GAME PLAY ***\n', 46)));
 
 }
 

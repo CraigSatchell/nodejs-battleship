@@ -15,7 +15,7 @@ const runApplication = () => {
 
    [player1, player2] = setupGame(player1, player2);
    playGame(player1, player2);
-   
+   console.log('\n\n'+ cenText('Thanks for playing Battleship...',80));
 }
 
 
@@ -60,35 +60,55 @@ const playGame = (player1, player2) => {
    let winner = false;
    let shot;
    let gridCoord;
-   //activePlayer = player1;
-
+   let response;
+   let isAI = !player2.isHuman;
+   // console.log(isAI);
+   // pressReturn();
+   
    // place ships on battle grid
    randPlaceShips(player1);
    randPlaceShips(player2);
 
-   // player 1 call shot
-   viewBattleGridPlayer(player1);
-   viewBattleGridOpponent(player2);
-   shot = callShot(player1, isValidShotCoord);
-   gridCoord = convertShot2GridCoords(shot);
-   isHit(gridCoord, player2);
-   checkForWinner(player1, player2);
-   pressReturn("Paused for Player 2 ...  Player 2 >> Press RETURN when Ready!");
+   // rotate shot calls between two players
+   while (true) {
+      // player 1 call shot
+      viewBattleGridPlayer(player1);
+      viewBattleGridOpponent(player2);
+      shot = callShot(player1, isValidShotCoord);
+      gridCoord = convertShot2GridCoords(shot);
+      isHit(gridCoord, player2);
+      if (checkForWinner(player1, player2) === true) {
+         break;
+      }
 
-   // player 2 call shot
-   viewBattleGridPlayer(player2);
-   viewBattleGridOpponent(player1);
-   if (player2.isHuman === false) {
-      shot = callRandShot(isValidShotCoord)
-   } else {
-      shot = callShot(player2, isValidShotCoord);
+      console.log('\n\n');
+      response = promptFor(`\tWait for ${player2.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
+      if (response === 'X') {
+         break;
+      }
+
+      // player 2 call shot
+      viewBattleGridPlayer(player2);
+      viewBattleGridOpponent(player1);
+      if (player2.isHuman === false) {
+         shot = callRandShot(isValidShotCoord)
+      } else {
+         shot = callShot(player2, isValidShotCoord);
+      }
+
+      gridCoord = convertShot2GridCoords(shot);
+      isHit(gridCoord, player1);
+      if (checkForWinner(player1, player2) === true) {
+         break;
+      }
+      console.log('\n\n');
+      response = promptFor(`\tWait for ${player1.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
+      if (response === 'X') {
+         break;
+      }
    }
-
-   gridCoord = convertShot2GridCoords(shot);
-   isHit(gridCoord, player1);
-   checkForWinner(player1, player2);
-   pressReturn("Paused for Player 1 ...  Player 1 >> Press RETURN when Ready!");
 }
+
 
 
 // check for game winner
@@ -181,6 +201,7 @@ const convertShot2GridCoords = (shotCoord) => {  //
 const viewBattleGridPlayer = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
    playGameBanner();
+   console.log('\n' + cenText(player.name, 80));
    console.log('\n' + cenText('<<< Y O U R  B A T T L E  G R I D >>>', 80));
    console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
 
@@ -234,8 +255,6 @@ const viewBattleGridOpponent = (player) => {
 }
 
 
-
-
 // initialize player's battle grid
 const initBattleGrid = (size) => {
    let grid = new Array(size); // create an empty array of length n
@@ -252,7 +271,6 @@ const initBattleGrid = (size) => {
 // Place selected player ship on battle grid
 const placeShip = (player, shipArrPos, gridCoord, orientation, isAnyNodeOccuppied) => {
    if (isAnyNodeOccuppied(player, gridCoord, player.ships[shipArrPos].size, orientation) === false) {
-
       if (orientation === 'vertical') {   // vertical ship placement
          for (let i = gridCoord[0]; i < (gridCoord[0] + player.ships[shipArrPos].size); i++) {
             player.battleGrid[i][gridCoord[1]] = player.ships[shipArrPos].id; // populate battle grid with ship id value
@@ -331,11 +349,13 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
 // Check if player shot was a hit on opponent's battle grid
 const isHit = (gridCoord, player) => {
    if (player.battleGrid[gridCoord[0]][gridCoord[1]] !== '0') {
-      console.log('\n\t\tBoom!');
+      console.log('\n' + cenText('Boom! Your opponent has sustained some damage.',80));
       markHit(gridCoord, player);   // mark hit on player's battle grid
       return true;
    } else {
       markMiss(gridCoord, player);  // mark hit on player's battle grid
+      console.log('\n'+ cenText('Duh! You missed!',80));
+
    }
    return false;
 }
