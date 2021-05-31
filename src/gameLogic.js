@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, colorHitShot, colorMissShot, colorShipNode } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode } = require('./helper');
 const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
@@ -14,27 +14,8 @@ const runApplication = () => {
    let player2;
 
    [player1, player2] = setupGame(player1, player2);
-   //randPlaceShips(player1);
-   let success = placeShip(player1, 0, [2, 17], 'vertical', isAnyNodeOccuppied);
-   let hit = isHit([3, 17], player1);
-   hit = isHit([2, 5], player1);
-   viewBattleGridPlayer(player1);
-   viewBattleGridOpponent(player1);
-
-   for (let i in player1.ships) {
-      player1.ships[i].isSunk = true;
-   }
-
-   if (allSunkPlayer(player1, player2) === player1) {
-      console.log('\n\tCongratulation! ' + player2.name + ', you are the winner!');
-   } else if (allSunkPlayer(player1, player2) === player2) {
-      console.log('\n\tCongratulation! ' + player1.name + ', you are the winner!');
-
-   }
-
-   //console.log('place ship ok?', success);
-   //console.log(player1.ships[0].locNodes);
-
+   playGame(player1, player2);
+   
 }
 
 
@@ -44,8 +25,7 @@ const setupGame = (player1, player2) => {
    let loop = true;
    while (loop) {
       setupGameBanner();
-      console.log(indentText("Do you wish to play solo or against another person? "));
-      let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
+      let gameMode = promptForGameMode();
       if (gameMode === 'P' || gameMode === 'S') {  // create AI and human player instances as required
          if (gameMode === 'S') {
             player1 = new Human('Player 1', initBattleGrid(gridSize));
@@ -73,15 +53,56 @@ const setupGame = (player1, player2) => {
 }
 
 
+
 // Simulate game play
 const playGame = (player1, player2) => {
    let activePlayer;
-   activePlayer = player1;
-   let shot = callShot(activePlayer, isValidShotCoord);
-   let gridCoord = convertShot2GridCoords(shot);
+   let winner = false;
+   let shot;
+   let gridCoord;
+   //activePlayer = player1;
 
+   // place ships on battle grid
+   randPlaceShips(player1);
+   randPlaceShips(player2);
+
+   // player 1 call shot
+   viewBattleGridPlayer(player1);
+   viewBattleGridOpponent(player2);
+   shot = callShot(player1, isValidShotCoord);
+   gridCoord = convertShot2GridCoords(shot);
+   isHit(gridCoord, player2);
+   checkForWinner(player1, player2);
+   pressReturn("Paused for Player 2 ...  Player 2 >> Press RETURN when Ready!");
+
+   // player 2 call shot
+   viewBattleGridPlayer(player2);
+   viewBattleGridOpponent(player1);
+   if (player2.isHuman === false) {
+      shot = callRandShot(isValidShotCoord)
+   } else {
+      shot = callShot(player2, isValidShotCoord);
+   }
+
+   gridCoord = convertShot2GridCoords(shot);
+   isHit(gridCoord, player1);
+   checkForWinner(player1, player2);
+   pressReturn("Paused for Player 1 ...  Player 1 >> Press RETURN when Ready!");
 }
 
+
+// check for game winner
+const checkForWinner = (player1, player2) => {
+   let winner = null;
+   if (allSunkPlayer(player1, player2) === player1) {
+      console.log('\n\tCongratulation! ' + player2.name + ', you are the winner!');
+      winner = true;
+   } else if (allSunkPlayer(player1, player2) === player2) {
+      console.log('\n\tCongratulation! ' + player1.name + ', you are the winner!');
+      winner = true;
+   }
+   return winner;
+}
 
 
 // Generate random name for player ships
@@ -98,11 +119,10 @@ const callShot = (player, validShotCallback) => {
    let shot = '';
    let loop = true;
    while (loop) {
-      playGameBanner();
-      showBattleGrid(player);    // display battle grid
-      shot = promptFor('\t\t\t' + player.name + ' >> Call Shot (ex. F4, A1): ').toUpperCase();
+      // playGameBanner();
+      // showBattleGrid(player);    // display battle grid
+      shot = promptForShotCoord(player);
       if (shot.length <= 3 && validShotCallback(shot)) {
-         //console.log(shot);
          loop = false;
       }
    }
@@ -112,9 +132,17 @@ const callShot = (player, validShotCallback) => {
 
 
 // Call random shot coordinates
-const callRandShot = (player) => {
-   let row = Math.floor(Math.random() * gridSize);
-   let col = Math.floor(Math.random() * gridSize);
+const callRandShot = (isValid) => {
+   let loop = true;
+   let row;
+   let col;
+   while (loop) {
+      row = Math.floor(Math.random() * gridSize);
+      col = Math.floor(Math.random() * gridSize);
+      if (isValid([row, col]) === true) {
+         loop = false;
+      }
+   }
    return [row, col]    // return grid coords
 }
 
@@ -152,6 +180,8 @@ const convertShot2GridCoords = (shotCoord) => {  //
 
 const viewBattleGridPlayer = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
+   playGameBanner();
+   console.log('\n' + cenText('<<< Y O U R  B A T T L E  G R I D >>>', 80));
    console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
 
    for (let i = 0; i < player.battleGrid.length; i++) {
@@ -174,13 +204,15 @@ const viewBattleGridPlayer = (player) => {
    for (let i in player.ships) {
       console.log('\t', player.ships[i].id, '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
    }
-   console.log('\n\n');
+   pressReturn();
 }
 
 
 
 const viewBattleGridOpponent = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
+   playGameBanner();
+   console.log('\n' + cenText("<<< O P P O N E N T'S  B A T T L E  G R I D >>>", 80));
    console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
 
    for (let i = 0; i < player.battleGrid.length; i++) {
@@ -198,7 +230,7 @@ const viewBattleGridOpponent = (player) => {
       }
       console.log(row);
    }
-   console.log('\n\n');
+   console.log('\n');
 }
 
 

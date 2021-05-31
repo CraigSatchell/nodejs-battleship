@@ -19,7 +19,7 @@ const colorShipNode = chalk.black.bgGreen;
 
 // wait for user to press return to continue
 function pressReturn(msg = 'Press RETURN...') {
-   prompt(`\n\t\t${msg}`);
+   prompt(`\n\t${msg}`);
 }
 
 
@@ -28,11 +28,6 @@ function promptFor(label) {
    return prompt(`${label}`);
 }
 
-
-// prompt for gesture entry
-function promptGesture(label) {
-   return prompt(`\t\t${label}`, { echo: '*' });
-}
 
 // Prompt for player name from user input
 const promptForPlayerName = (currPlayerName) => {
@@ -45,6 +40,22 @@ const promptForPlayerName = (currPlayerName) => {
    }
    return currPlayerName;    // return string
 }
+
+
+const promptForGameMode = () => {
+   console.log(indentText("Do you wish to play solo or against another person? "));
+   let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
+   return gameMode;  // return game mode value
+}
+
+
+
+const promptForShotCoord = (player) => {
+   let shot = promptFor('\t\t\t' + player.name + ' >> Call Shot (ex. F4, A1): ').toUpperCase();
+   return shot;   // return shot coordinates
+}
+
+
 
 
 function cenText(text, width = 50) {
@@ -93,9 +104,10 @@ function setupGameBanner() {
 
 module.exports.cenText = cenText;
 module.exports.indentText = indentText;
-module.exports.promptGesture = promptGesture;
 module.exports.promptFor = promptFor;
 module.exports.promptForPlayerName = promptForPlayerName;
+module.exports.promptForGameMode = promptForGameMode;
+module.exports.promptForShotCoord = promptForShotCoord;
 module.exports.pressReturn = pressReturn;
 module.exports.appBanner = appBanner;
 module.exports.playGameBanner = playGameBanner;
