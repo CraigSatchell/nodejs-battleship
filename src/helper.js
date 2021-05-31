@@ -14,6 +14,7 @@ const colorInline = chalk.white;
 const colorHitShot = chalk.black.bgRed;
 const colorMissShot = chalk.black.bgWhite;
 const colorShipNode = chalk.black.bgGreen;
+const colorGridLabel = chalk.yellow;
 
 
 
@@ -123,3 +124,4 @@ module.exports.colorInline = colorInline;
 module.exports.colorShipNode = colorShipNode;
 module.exports.colorHitShot = colorHitShot;
 module.exports.colorMissShot = colorMissShot;
+module.exports.colorGridLabel = colorGridLabel;

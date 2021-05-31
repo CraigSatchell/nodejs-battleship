@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel } = require('./helper');
 const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
@@ -204,10 +204,10 @@ const viewBattleGridPlayer = (player) => {
    playGameBanner();
    console.log('\n' + cenText(player.name, 80));
    console.log('\n' + cenText('<<< Y O U R  B A T T L E  G R I D >>>', 80));
-   console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
+   console.log('\n\n\t' + colorGridLabel('   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20'));
 
    for (let i = 0; i < player.battleGrid.length; i++) {
-      let row = '\t' + gridLabels[i];
+      let row = '\t' + colorGridLabel(gridLabels[i]);
       for (let j = 0; j < player.battleGrid[0].length; j++) {
          if (player.battleGrid[i][j] === '0') {
             row += '  *';
@@ -240,10 +240,10 @@ const viewBattleGridOpponent = (player) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
    playGameBanner();
    console.log('\n' + cenText("<<< O P P O N E N T'S  B A T T L E  G R I D >>>", 80));
-   console.log('\n\n\t   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20');
+   console.log('\n\n\t' + colorGridLabel('   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20'));
 
    for (let i = 0; i < player.battleGrid.length; i++) {
-      let row = '\t' + gridLabels[i];
+      let row = '\t' + colorGridLabel(gridLabels[i]);
       for (let j = 0; j < player.battleGrid[0].length; j++) {
          if (player.battleGrid[i][j] === '0') {
             row += '  *';
