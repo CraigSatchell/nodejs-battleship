@@ -15,7 +15,7 @@ const runApplication = () => {
 
    [player1, player2] = setupGame(player1, player2);
    playGame(player1, player2);
-   console.log('\n\n'+ cenText('Thanks for playing Battleship...',80));
+   console.log('\n\n' + cenText('Thanks for playing Battleship...', 80));
 }
 
 
@@ -64,7 +64,7 @@ const playGame = (player1, player2) => {
    let isAI = !player2.isHuman;
    // console.log(isAI);
    // pressReturn();
-   
+
    // place ships on battle grid
    randPlaceShips(player1);
    randPlaceShips(player2);
@@ -72,6 +72,12 @@ const playGame = (player1, player2) => {
    // rotate shot calls between two players
    while (true) {
       // player 1 call shot
+      console.log('\n\n');
+      response = promptFor(`\tWait for ${player1.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
+      if (response === 'X') {
+         break;
+      }
+
       viewBattleGridPlayer(player1);
       viewBattleGridOpponent(player2);
       shot = callShot(player1, isValidShotCoord);
@@ -99,11 +105,6 @@ const playGame = (player1, player2) => {
       gridCoord = convertShot2GridCoords(shot);
       isHit(gridCoord, player1);
       if (checkForWinner(player1, player2) === true) {
-         break;
-      }
-      console.log('\n\n');
-      response = promptFor(`\tWait for ${player1.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
-      if (response === 'X') {
          break;
       }
    }
@@ -223,7 +224,12 @@ const viewBattleGridPlayer = (player) => {
    // display legend
    console.log('\n\n' + cenText('*** SHIP LEGEND ***\n', 76));
    for (let i in player.ships) {
-      console.log('\t', player.ships[i].id, '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
+      if (player.ships[i].isSunk) {
+         console.log('\t', colorHitShot(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
+      } else {
+         console.log('\t', colorShipNode(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
+      }
+   
    }
    pressReturn();
 }
@@ -348,13 +354,13 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
 
 // Check if player shot was a hit on opponent's battle grid
 const isHit = (gridCoord, player) => {
-   if (player.battleGrid[gridCoord[0]][gridCoord[1]] !== '0') {
-      console.log('\n' + cenText('Boom! Your opponent has sustained some damage.',80));
+   if (player.battleGrid[gridCoord[0]][gridCoord[1]] !== '0' && !player.battleGrid[gridCoord[0]][gridCoord[1]].includes('X')) {
+      console.log('\n' + cenText('Boom! Your opponent has sustained some damage.', 80));
       markHit(gridCoord, player);   // mark hit on player's battle grid
       return true;
    } else {
       markMiss(gridCoord, player);  // mark hit on player's battle grid
-      console.log('\n'+ cenText('Duh! You missed!',80));
+      console.log('\n' + cenText('Duh! You missed!', 80));
 
    }
    return false;
@@ -373,6 +379,7 @@ const markHit = (gridCoord, player) => {
    // check whether ship is sunk
    if (isShipSunk(ship)) {
       ship.isSunk = true;
+      console.log('\n'+ cenText(`You sank ${player.name}'s ${ship.type} the ${ship.name}.`,80))
    }
 }
 
