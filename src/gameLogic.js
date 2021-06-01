@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel, promptForShipGridCoord, promptForShipGridOrientation } = require('./helper');
+const { promptFor, pressReturn, cenText, setupGameBanner, gameOverBanner, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel, promptForShipGridCoord, promptForShipGridOrientation } = require('./helper');
 const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
@@ -14,7 +14,12 @@ const runApplication = () => {
    let player2;
 
    [player1, player2] = setupGame(player1, player2);
-   playGame(player1, player2);
+   for (let i in player2.ships) {
+      player2.ships[i].isSunk = true;
+   }
+   checkForWinner(player1, player2);
+
+   //playGame(player1, player2);
    console.log('\n\n' + cenText('Thanks for playing Battleship...', 80));
 }
 
@@ -123,10 +128,12 @@ const playGame = (player1, player2) => {
 const checkForWinner = (player1, player2) => {
    let winner = null;
    if (allSunkPlayer(player1, player2) === player1) {
-      console.log('\n\tCongratulation! ' + player2.name + ', you are the winner!');
+      gameOverBanner();
+      console.log('\n\n\n' + cenText('Congratulations! ' + player2.name + ', you are the winner!', 80));
       winner = true;
    } else if (allSunkPlayer(player1, player2) === player2) {
-      console.log('\n\tCongratulation! ' + player1.name + ', you are the winner!');
+      gameOverBanner();
+      console.log('\n\n\n' + cenText('Congratulations! ' + player1.name + ', you are the winner!', 80));
       winner = true;
    }
    return winner;
@@ -245,7 +252,7 @@ const viewBattleGridPlayer = (player, pause = true) => {
       } else if (player.ships[i].locNodes.length > 0) {
          console.log('\t', colorShipNode(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
       } else {
-         console.log('\t',player.ships[i].id, '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
+         console.log('\t', player.ships[i].id, '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
 
       }
 

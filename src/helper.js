@@ -113,8 +113,19 @@ function appBanner(appTitle) {
    console.log(colorBanner('\t\t' + cenText(appTitle, 46)));
    console.log(colorBanner('\t\t' + ' '.repeat(46)));
    console.log(colorBanner('\t\t' + ' '.repeat(46)));
-
 }
+
+
+
+const gameOverBanner = () => {
+   console.clear();
+   console.log(colorBanner('\n\n\n\t\t' + ' '.repeat(46)));
+   console.log(colorBanner('\t\t' + ' '.repeat(46)));
+   console.log(colorBanner('\t\t' + cenText('G A M E  O V E R !', 46)));
+   console.log(colorBanner('\t\t' + ' '.repeat(46)));
+   console.log(colorBanner('\t\t' + ' '.repeat(46)));
+}
+
 
 
 // Display game play banner
@@ -143,6 +154,7 @@ module.exports.promptForShipGridCoord = promptForShipGridCoord;
 module.exports.promptForShipGridOrientation = promptForShipGridOrientation
 module.exports.pressReturn = pressReturn;
 module.exports.appBanner = appBanner;
+module.exports.gameOverBanner = gameOverBanner;
 module.exports.playGameBanner = playGameBanner;
 module.exports.setupGameBanner = setupGameBanner;
 module.exports.wait = wait;
