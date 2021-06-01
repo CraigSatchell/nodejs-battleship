@@ -353,7 +353,7 @@ const humanPlaceShips = (player, isValid) => {
       }
       success = false;  // reset success flag for next iteration
    }
-   console.log('\n\t' + `${player.name}, you have successfully placed all your ships.\n`,76);
+   console.log('\n\t' + `${player.name}, you have successfully placed all your ships.\n`);
 }
 
 
