@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel, promptForShipGridCoord, promptForShipGridOrientation } = require('./helper');
+const { promptFor, pressReturn, cenText, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel, promptForShipGridCoord, promptForShipGridOrientation } = require('./helper');
 const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
@@ -35,26 +35,31 @@ const setupGame = (player1, player2) => {
             player2 = new Human('Player 2', initBattleGrid(gridSize));
          }
 
-         // place pyer ships on battle grid
+         // prompt user for player names
+         player1.name = promptForPlayerName(player1.name);    // get name for player 1
          if (player2.isHuman) {
-            humanPlaceShips(player1)
+            player2.name = promptForPlayerName(player2.name);    // get name for player 2
          }
-         randPlaceShips(player1);
-         randPlaceShips(player2);
 
+
+         // random name ships
          randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
          randomNamePlayerShips(player2, shipList2);   // random name player 2 ships
+
+         // place player ships on battle grid
+         if (player2.isHuman) {
+            humanPlaceShips(player1, isValidGridCoord);
+            humanPlaceShips(player2, isValidGridCoord);
+         } else {
+            humanPlaceShips(player1, isValidGridCoord);
+            randPlaceShips(player2);
+         }
+
          loop = false;
          //return [player1, player2]  // array containing AI/Human class instances
       }
    }
 
-   player1.name = promptForPlayerName(player1.name);    // get name for player 1
-   if (player2.isHuman) {
-      player2.name = promptForPlayerName(player2.name);    // get name for player 2
-   }
-
-   //console.log('\n' + indentText('E100 >> Player 1:'), player1, '\n\t\tE100 >> Player 2:', player2);
 
    return [player1, player2]  // array containing AI/Human class instances
 }
@@ -81,7 +86,7 @@ const playGame = (player1, player2) => {
 
       viewBattleGridPlayer(player1);
       viewBattleGridOpponent(player2);
-      shot = callShot(player1, isValidShotCoord);
+      shot = callShot(player1, isValidGridCoord);
       gridCoord = convertUser2GridCoord(shot);
       isHit(gridCoord, player2);
       if (checkForWinner(player1, player2) === true) {
@@ -98,9 +103,9 @@ const playGame = (player1, player2) => {
       viewBattleGridPlayer(player2);
       viewBattleGridOpponent(player1);
       if (player2.isHuman === false) {
-         shot = callRandShot(isValidShotCoord)
+         shot = callRandShot(isValidGridCoord)
       } else {
-         shot = callShot(player2, isValidShotCoord);
+         shot = callShot(player2, isValidGridCoord);
       }
 
       gridCoord = convertUser2GridCoord(shot);
@@ -171,7 +176,7 @@ const callRandShot = (isValid) => {
 
 
 // Check if player entered valid shot coordinates
-const isValidShotCoord = (shotCoord) => {
+const isValidGridCoord = (shotCoord) => {
    const gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    const gridCols = gridSize;
    const len = shotCoord.length;
@@ -199,7 +204,7 @@ const convertUser2GridCoord = (userCoord) => {  //
 }
 
 
-const viewBattleGridPlayer = (player) => {
+const viewBattleGridPlayer = (player, pause = true) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
    playGameBanner();
    console.log('\n' + cenText(player.name, 80));
@@ -231,7 +236,7 @@ const viewBattleGridPlayer = (player) => {
       }
 
    }
-   pressReturn();
+   pause ? pressReturn() : null;    // wait for user action
 }
 
 
@@ -317,28 +322,31 @@ const randPlaceShips = (player) => {
          success = placeShip(player, i, [randRow, randCol], orientation, isAnyNodeOccuppied); // place ship
       }
       success = false;
-      //console.log('Ship Type:', player.ships[i].type, '\trow:', randRow, 'col:', randCol, 'orientation:', orientation);
    }
 }
 
 
 
 // Human player place ships on battle grid.
-const humanPlaceShips = (player) => {
+const humanPlaceShips = (player, isValid) => {
    let success = false;
    let orientation;
    let placement;
    let row;
    let col;
    for (let i = 0; i < player.ships.length; i++) {
-      // get placement parameters from player
+      // get ship placement parameters from player
       while (!success) {
+         //setupGameBanner();
+         viewBattleGridPlayer(player, false, );
+         console.log('\n\n\n' + cenText(`<<< P L A C E  S H I P S >>>`, 70));
          placement = promptForShipGridCoord(player, i);
          orientation = promptForShipGridOrientation();
          [row, col] = convertUser2GridCoord(placement);
-         success = placeShip(player, i, [row, col], orientation, isAnyNodeOccuppied); // place ship
+         if(isValid([row, col])){
+            success = placeShip(player, i, [row, col], orientation, isAnyNodeOccuppied);
+         }
       }
-      success = false;
    }
 }
 

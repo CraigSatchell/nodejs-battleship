@@ -2,7 +2,7 @@ const prompt = require('prompt-sync')();
 const chalk = require('chalk');
 
 
-const appTitle = 'BATTLESHIP';
+const appTitle = 'B A T T L E S H I P';
 
 // ui color definitions
 const colorBanner = chalk.black.bgWhite;
@@ -64,7 +64,7 @@ const promptForShotCoord = (player) => {
 
 // Prompt player for ship placement grid coordinates
 const promptForShipGridCoord = (player, shipIndex) => {
-   let placement = promptFor('\t\t' + `Place the ${player.ships[shipIndex].name}  at (ex. F4, A1): `).toUpperCase();
+   let placement = promptFor('\n\t' + `Place the ${player.ships[shipIndex].name}  at (ex. F4, A1): `).toUpperCase();
    return placement;   // return shot coordinates
 }
 
@@ -72,7 +72,7 @@ const promptForShipGridCoord = (player, shipIndex) => {
 
 // Prompt player for ship placement grid orientation
 const promptForShipGridOrientation = () => {
-   let orientation = promptFor('\t\tPlacement orientation ? (V - vertical, H - horizontal) default = horizontal: ').toUpperCase();
+   let orientation = promptFor('\tPlacement orientation ? (V - vertical, H - horizontal): ').toUpperCase();
    if (orientation === 'V') {
       return 'vertical';
    } else {
