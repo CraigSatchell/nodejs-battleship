@@ -176,12 +176,12 @@ const callRandShot = (isValid) => {
 
 
 // Check if player entered valid shot coordinates
-const isValidGridCoord = (shotCoord) => {
+const isValidGridCoord = (userCoord) => {
    const gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
    const gridCols = gridSize;
-   const len = shotCoord.length;
-   let rowValue = shotCoord[0];
-   let colValue = len === 3 ? parseInt(shotCoord.slice(len - 2, len)) : parseInt(shotCoord[1]);
+   const len = userCoord.length;
+   let rowValue = userCoord[0];
+   let colValue = len === 3 ? parseInt(userCoord.slice(len - 2, len)) : parseInt(userCoord[1]);
 
    if (gridRows.includes(rowValue) && (colValue >= 1 && colValue <= gridCols)) {
       return true;
@@ -339,17 +339,22 @@ const humanPlaceShips = (player, isValid) => {
       while (!success) {
          //setupGameBanner();
          viewBattleGridPlayer(player, false, );
-         console.log('\n\n\n' + cenText(`<<< P L A C E  S H I P S >>>`, 70));
+         console.log('\n\n\n' + cenText(`<<< P L A C E  S H I P S >>>`, 76));
          placement = promptForShipGridCoord(player, i);
          orientation = promptForShipGridOrientation();
-         [row, col] = convertUser2GridCoord(placement);
-         if(isValid([row, col])){
+         if(isValid(placement)){
+            [row, col] = convertUser2GridCoord(placement);
             success = placeShip(player, i, [row, col], orientation, isAnyNodeOccuppied);
          }
+         // valid ship placement
+         if (!isValid(placement) || !success) {
+            pressReturn('Unable to place ship using those coordinates.\n\tEnter new coordinates.\n');
+         }
       }
+      success = false;  // reset success flag for next iteration
    }
+   console.log('\n\t' + `${player.name}, you have successfully placed all your ships.\n`,76);
 }
-
 
 
 

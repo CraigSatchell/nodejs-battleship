@@ -64,7 +64,7 @@ const promptForShotCoord = (player) => {
 
 // Prompt player for ship placement grid coordinates
 const promptForShipGridCoord = (player, shipIndex) => {
-   let placement = promptFor('\n\t' + `Place the ${player.ships[shipIndex].name}  at (ex. F4, A1): `).toUpperCase();
+   let placement = promptFor('\n\t' + `Place the ${player.ships[shipIndex].name}(${player.ships[shipIndex].id}) at (ex. F4, A1): `).toUpperCase();
    return placement;   // return shot coordinates
 }
 
