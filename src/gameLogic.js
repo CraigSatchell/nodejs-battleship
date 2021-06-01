@@ -93,22 +93,23 @@ const playGame = (player1, player2) => {
          break;
       }
 
-      console.log('\n\n');
-      response = promptFor(`\tWait for ${player2.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
-      if (response === 'X') {
-         break;
-      }
 
       // player 2 call shot
-      viewBattleGridPlayer(player2);
-      viewBattleGridOpponent(player1);
       if (player2.isHuman === false) {
-         shot = callRandShot(isValidGridCoord)
+         shot = callRandShot(isValidGridCoord);
+         gridCoord = shot;
+         console.log('\n\n\n' + cenText(`${player2.name} called '${convertGridCoord2User(shot)}`, 76));
       } else {
+         console.log('\n\n');
+         response = promptFor(`\tWait for ${player2.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
+         if (response === 'X') {
+            break;
+         }
+         viewBattleGridPlayer(player2);
+         viewBattleGridOpponent(player1);
          shot = callShot(player2, isValidGridCoord);
+         gridCoord = convertUser2GridCoord(shot);
       }
-
-      gridCoord = convertUser2GridCoord(shot);
       isHit(gridCoord, player1);
       if (checkForWinner(player1, player2) === true) {
          break;
@@ -146,8 +147,6 @@ const callShot = (player, validShotCallback) => {
    let shot = '';
    let loop = true;
    while (loop) {
-      // playGameBanner();
-      // showBattleGrid(player);    // display battle grid
       shot = promptForShotCoord(player);
       if (shot.length <= 3 && validShotCallback(shot)) {
          loop = false;
@@ -163,13 +162,10 @@ const callRandShot = (isValid) => {
    let loop = true;
    let row;
    let col;
-   while (loop) {
-      row = Math.floor(Math.random() * gridSize);
-      col = Math.floor(Math.random() * gridSize);
-      if (isValid([row, col]) === true) {
-         loop = false;
-      }
-   }
+   // generate random shot coordinates
+   row = Math.floor(Math.random() * gridSize);
+   col = Math.floor(Math.random() * gridSize);
+
    return [row, col]    // return grid coords
 }
 
@@ -204,6 +200,21 @@ const convertUser2GridCoord = (userCoord) => {  //
 }
 
 
+// Convert battle grid coordinates to user grid coordinates
+const convertGridCoord2User = (gridCoord) => {  // 
+   let row;
+   let col;
+   let len = gridCoord.length;
+   let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
+   row = gridRows[gridCoord[0]]; // convert row value
+   col = gridCoord[1] + 1;
+
+   return row + col
+}
+
+
+
+
 const viewBattleGridPlayer = (player, pause = true) => {
    const gridLabels = 'A B C D E F G H I J K L M N O P Q R S T'.split(" ");
    playGameBanner();
@@ -231,8 +242,11 @@ const viewBattleGridPlayer = (player, pause = true) => {
    for (let i in player.ships) {
       if (player.ships[i].isSunk) {
          console.log('\t', colorHitShot(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
-      } else {
+      } else if (player.ships[i].locNodes.length > 0) {
          console.log('\t', colorShipNode(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
+      } else {
+         console.log('\t',player.ships[i].id, '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
+
       }
 
    }
@@ -338,11 +352,11 @@ const humanPlaceShips = (player, isValid) => {
       // get ship placement parameters from player
       while (!success) {
          //setupGameBanner();
-         viewBattleGridPlayer(player, false, );
+         viewBattleGridPlayer(player, false,);
          console.log('\n\n\n' + cenText(`<<< P L A C E  S H I P S >>>`, 76));
          placement = promptForShipGridCoord(player, i);
          orientation = promptForShipGridOrientation();
-         if(isValid(placement)){
+         if (isValid(placement)) {
             [row, col] = convertUser2GridCoord(placement);
             success = placeShip(player, i, [row, col], orientation, isAnyNodeOccuppied);
          }
@@ -391,12 +405,12 @@ const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
 // Check if player shot was a hit on opponent's battle grid
 const isHit = (gridCoord, player) => {
    if (player.battleGrid[gridCoord[0]][gridCoord[1]] !== '0' && !player.battleGrid[gridCoord[0]][gridCoord[1]].includes('X')) {
-      console.log('\n' + cenText('Boom! Your opponent has sustained some damage.', 80));
+      console.log('\n' + cenText(`Boom! Your opponent has sustained some damage.`, 80));
       markHit(gridCoord, player);   // mark hit on player's battle grid
       return true;
    } else {
       markMiss(gridCoord, player);  // mark hit on player's battle grid
-      console.log('\n' + cenText('Duh! You missed!', 80));
+      console.log('\n' + cenText(`Duh! You missed!`, 80));
 
    }
    return false;
