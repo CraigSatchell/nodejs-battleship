@@ -14,12 +14,8 @@ const runApplication = () => {
    let player2;
 
    [player1, player2] = setupGame(player1, player2);
-   for (let i in player2.ships) {
-      player2.ships[i].isSunk = true;
-   }
-   checkForWinner(player1, player2);
+   playGame(player1, player2);
 
-   //playGame(player1, player2);
    console.log('\n\n' + cenText('Thanks for playing Battleship...', 80));
 }
 
@@ -218,7 +214,6 @@ const convertGridCoord2User = (gridCoord) => {  //
 
    return row + col
 }
-
 
 
 
@@ -449,19 +444,6 @@ const markMiss = (gridCoord, player) => {
 
 
 
-
-
-// TODO: display current game statistics (i.e, hits, misses, ships sunk, ships damaged, etc)
-const displayGameStats = (player1, player2) => {
-   /*
-      display in game statistic (ex. hits, shots, misses, ships damaged, ships sunk, etc)
-   */
-
-
-}
-
-
-
 // Check for game winner after each shot in which there was a hit.
 const allSunkPlayer = (player1, player2) => {  // player instances
    let playerAllSunk;
@@ -473,25 +455,6 @@ const allSunkPlayer = (player1, player2) => {  // player instances
    }
 
    return playerAllSunk;   // return player instances or null, if no winner was detected
-}
-
-
-
-
-// TODO: show relavent event message after each shot whether hit, missed, ship sunk or damaged
-const showCommentary = (messages, msgType) => {
-   /*
-      console.log random game play message (ex. 'ha ha! you missed...)
-   */
-
-}
-
-
-
-
-// TODO: show battle grid for selected player
-const showBattleGrid = (player) => {
-   viewBattleGridOpponent(player);     // view opponent's battle grid
 }
 
 

@@ -19,13 +19,13 @@ const colorGridLabel = chalk.yellow;
 
 
 // Wait for user to press return to continue
-function pressReturn(msg = 'Press RETURN...') {
+const pressReturn = (msg = 'Press RETURN...') => {
    prompt(`\n\t${msg}`);
 }
 
 
 // Prompt for standard data entry
-function promptFor(label) {
+const promptFor = (label) => {
    return prompt(`${label}`);
 }
 
@@ -82,7 +82,7 @@ const promptForShipGridOrientation = () => {
 
 
 // Center text string in console
-function cenText(text, width = 50) {
+const cenText = (text, width = 50) => {
    let padding = 0;
    if (text.length <= width) {
       padding = (width - text.length) / 2;
@@ -93,20 +93,20 @@ function cenText(text, width = 50) {
 
 
 // Indent text in console
-function indentText(text) {
+const indentText = (text) => {
    return (`\t\t${text}`);
 }
 
 
 // Display message and wait 'X' secs
-async function wait(msg = '', secs = 3) {
+const wait = async (msg = '', secs = 3) => {
    await new Promise(r => setTimeout(r, secs * 1000));
    console.log(msg);
 }
 
 
 // Application banner
-function appBanner(appTitle) {
+const appBanner = (appTitle) => {
    console.clear();
    console.log(colorBanner('\n\n\n\t\t' + ' '.repeat(46)));
    console.log(colorBanner('\t\t' + ' '.repeat(46)));
@@ -129,7 +129,7 @@ const gameOverBanner = () => {
 
 
 // Display game play banner
-function playGameBanner() {
+const playGameBanner = () => {
    appBanner(appTitle);
    console.log(colorPrimary('\n\n\t\t' + cenText('*** GAME PLAY ***\n', 46)));
 
@@ -137,7 +137,7 @@ function playGameBanner() {
 
 
 // Display game setup banner
-function setupGameBanner() {
+const setupGameBanner = () => {
    appBanner(appTitle);
    console.log(colorPrimary('\n\n\t\t' + cenText('*** GAME SETUP ***\n', 48)));
 
