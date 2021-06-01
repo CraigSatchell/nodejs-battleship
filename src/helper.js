@@ -2,7 +2,7 @@ const prompt = require('prompt-sync')();
 const chalk = require('chalk');
 
 
-const appTitle = 'B A T T L E S H I P';
+const appTitle = 'B A T T L E S H I P ';
 
 // ui color definitions
 const colorBanner = chalk.black.bgWhite;
