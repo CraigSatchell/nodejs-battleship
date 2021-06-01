@@ -98,7 +98,7 @@ const playGame = (player1, player2) => {
       if (player2.isHuman === false) {
          shot = callRandShot(isValidGridCoord);
          gridCoord = shot;
-         console.log('\n\n\n' + cenText(`${player2.name} called '${convertGridCoord2User(shot)}`, 76));
+         console.log('\n\n\n' + cenText(`${player2.name} called "${convertGridCoord2User(shot)}"`, 76));
       } else {
          console.log('\n\n');
          response = promptFor(`\tWait for ${player2.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
