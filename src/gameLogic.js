@@ -1,6 +1,6 @@
 "use strict";
 
-const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel } = require('./helper');
+const { promptFor, pressReturn, cenText, indentText, appBanner, setupGameBanner, appTitle, playGameBanner, promptForPlayerName, promptForShotCoord, promptForGameMode, colorHitShot, colorMissShot, colorShipNode, colorGridLabel, promptForShipGridCoord, promptForShipGridOrientation } = require('./helper');
 const { shipList1, shipList2, randShipName } = require('../shiplist');
 const AI = require('../classes/player/AI');
 const Human = require('../classes/player/human');
@@ -35,6 +35,13 @@ const setupGame = (player1, player2) => {
             player2 = new Human('Player 2', initBattleGrid(gridSize));
          }
 
+         // place pyer ships on battle grid
+         if (player2.isHuman) {
+            humanPlaceShips(player1)
+         }
+         randPlaceShips(player1);
+         randPlaceShips(player2);
+
          randomNamePlayerShips(player1, shipList1);   // random name player 1 ships
          randomNamePlayerShips(player2, shipList2);   // random name player 2 ships
          loop = false;
@@ -62,12 +69,6 @@ const playGame = (player1, player2) => {
    let gridCoord;
    let response;
    let isAI = !player2.isHuman;
-   // console.log(isAI);
-   // pressReturn();
-
-   // place ships on battle grid
-   randPlaceShips(player1);
-   randPlaceShips(player2);
 
    // rotate shot calls between two players
    while (true) {
@@ -81,7 +82,7 @@ const playGame = (player1, player2) => {
       viewBattleGridPlayer(player1);
       viewBattleGridOpponent(player2);
       shot = callShot(player1, isValidShotCoord);
-      gridCoord = convertShot2GridCoords(shot);
+      gridCoord = convertUser2GridCoord(shot);
       isHit(gridCoord, player2);
       if (checkForWinner(player1, player2) === true) {
          break;
@@ -102,7 +103,7 @@ const playGame = (player1, player2) => {
          shot = callShot(player2, isValidShotCoord);
       }
 
-      gridCoord = convertShot2GridCoords(shot);
+      gridCoord = convertUser2GridCoord(shot);
       isHit(gridCoord, player1);
       if (checkForWinner(player1, player2) === true) {
          break;
@@ -185,16 +186,15 @@ const isValidShotCoord = (shotCoord) => {
 
 
 
-// Convert shot coordinates into battle grid coordinates
-const convertShot2GridCoords = (shotCoord) => {  // 
+// Convert user coordinates into battle grid coordinates
+const convertUser2GridCoord = (userCoord) => {  // 
    let row;
    let col;
-   let len = shotCoord.length;
+   let len = userCoord.length;
    let gridRows = 'A B C D E F G H I J K L M N O P Q R S T'.split(' ');
-   row = gridRows.indexOf(shotCoord[0]); // convert row value
-   col = (len === 3 ? parseInt(shotCoord.slice(len - 2, len)) : parseInt(shotCoord[1])) - 1;
+   row = gridRows.indexOf(userCoord[0]); // convert row value
+   col = (len === 3 ? parseInt(userCoord.slice(len - 2, len)) : parseInt(userCoord[1])) - 1;
 
-   //console.log('\n\tE200 >> battle grid Coord:', `(${row},${col})`);
    return [row, col]    // array referencing battle grid row and column
 }
 
@@ -229,7 +229,7 @@ const viewBattleGridPlayer = (player) => {
       } else {
          console.log('\t', colorShipNode(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
       }
-   
+
    }
    pressReturn();
 }
@@ -322,6 +322,29 @@ const randPlaceShips = (player) => {
 }
 
 
+
+// Human player place ships on battle grid.
+const humanPlaceShips = (player) => {
+   let success = false;
+   let orientation;
+   let placement;
+   let row;
+   let col;
+   for (let i = 0; i < player.ships.length; i++) {
+      // get placement parameters from player
+      while (!success) {
+         placement = promptForShipGridCoord(player, i);
+         orientation = promptForShipGridOrientation();
+         [row, col] = convertUser2GridCoord(placement);
+         success = placeShip(player, i, [row, col], orientation, isAnyNodeOccuppied); // place ship
+      }
+      success = false;
+   }
+}
+
+
+
+
 // Check whether any items within a range of nodes are occuppied
 // on a player's battle grid
 const isAnyNodeOccuppied = (player, startNode, rangeSize, orientation) => {
@@ -379,7 +402,7 @@ const markHit = (gridCoord, player) => {
    // check whether ship is sunk
    if (isShipSunk(ship)) {
       ship.isSunk = true;
-      console.log('\n'+ cenText(`You sank ${player.name}'s ${ship.type} the ${ship.name}.`,80))
+      console.log('\n' + cenText(`You sank ${player.name}'s ${ship.type} the ${ship.name}.`, 80))
    }
 }
 

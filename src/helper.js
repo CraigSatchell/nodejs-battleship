@@ -18,16 +18,17 @@ const colorGridLabel = chalk.yellow;
 
 
 
-// wait for user to press return to continue
+// Wait for user to press return to continue
 function pressReturn(msg = 'Press RETURN...') {
    prompt(`\n\t${msg}`);
 }
 
 
-// prompt for standard data entry
+// Prompt for standard data entry
 function promptFor(label) {
    return prompt(`${label}`);
 }
+
 
 
 // Prompt for player name from user input
@@ -43,6 +44,8 @@ const promptForPlayerName = (currPlayerName) => {
 }
 
 
+
+// Prompt user for game mode during setup
 const promptForGameMode = () => {
    console.log(indentText("Do you wish to play solo or against another person? "));
    let gameMode = promptFor(indentText("Enter 'S' for solo or 'P' for another person: ")).toUpperCase();
@@ -51,6 +54,7 @@ const promptForGameMode = () => {
 
 
 
+// Prompt player for shot grid coordinates
 const promptForShotCoord = (player) => {
    let shot = promptFor('\t\t\t' + player.name + ' >> Call Shot (ex. F4, A1): ').toUpperCase();
    return shot;   // return shot coordinates
@@ -58,7 +62,26 @@ const promptForShotCoord = (player) => {
 
 
 
+// Prompt player for ship placement grid coordinates
+const promptForShipGridCoord = (player, shipIndex) => {
+   let placement = promptFor('\t\t' + `Place the ${player.ships[shipIndex].name}  at (ex. F4, A1): `).toUpperCase();
+   return placement;   // return shot coordinates
+}
 
+
+
+// Prompt player for ship placement grid orientation
+const promptForShipGridOrientation = () => {
+   let orientation = promptFor('\t\tPlacement orientation ? (V - vertical, H - horizontal) default = horizontal: ').toUpperCase();
+   if (orientation === 'V') {
+      return 'vertical';
+   } else {
+      return 'horizontal';
+   }
+}
+
+
+// Center text string in console
 function cenText(text, width = 50) {
    let padding = 0;
    if (text.length <= width) {
@@ -69,17 +92,20 @@ function cenText(text, width = 50) {
 }
 
 
+// Indent text in console
 function indentText(text) {
    return (`\t\t${text}`);
 }
 
-async function wait(msg='', secs=3) {
+
+// Display message and wait 'X' secs
+async function wait(msg = '', secs = 3) {
    await new Promise(r => setTimeout(r, secs * 1000));
    console.log(msg);
 }
 
 
-// application banner
+// Application banner
 function appBanner(appTitle) {
    console.clear();
    console.log(colorBanner('\n\n\n\t\t' + ' '.repeat(46)));
@@ -90,12 +116,16 @@ function appBanner(appTitle) {
 
 }
 
+
+// Display game play banner
 function playGameBanner() {
    appBanner(appTitle);
    console.log(colorPrimary('\n\n\t\t' + cenText('*** GAME PLAY ***\n', 46)));
 
 }
 
+
+// Display game setup banner
 function setupGameBanner() {
    appBanner(appTitle);
    console.log(colorPrimary('\n\n\t\t' + cenText('*** GAME SETUP ***\n', 48)));
@@ -109,6 +139,8 @@ module.exports.promptFor = promptFor;
 module.exports.promptForPlayerName = promptForPlayerName;
 module.exports.promptForGameMode = promptForGameMode;
 module.exports.promptForShotCoord = promptForShotCoord;
+module.exports.promptForShipGridCoord = promptForShipGridCoord;
+module.exports.promptForShipGridOrientation = promptForShipGridOrientation
 module.exports.pressReturn = pressReturn;
 module.exports.appBanner = appBanner;
 module.exports.playGameBanner = playGameBanner;
