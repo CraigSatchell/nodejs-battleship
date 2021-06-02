@@ -99,7 +99,7 @@ const playGame = (player1, player2) => {
       if (player2.isHuman === false) {
          shot = callRandShot(isValidGridCoord);
          gridCoord = shot;
-         console.log('\n\n\n' + cenText(`${player2.name} called "${convertGridCoord2User(shot)}"`, 76));
+         console.log('\n\n\n' + cenText(`${player2.name} called "${convertGridCoord2User(shot)}"`, 80));
       } else {
          console.log('\n\n');
          response = promptFor(`\tWait for ${player2.name} >> Press RETURN when READY or 'X' to quit game: `).toUpperCase();
@@ -240,7 +240,7 @@ const viewBattleGridPlayer = (player, pause = true) => {
       console.log(row);
    }
    // display legend
-   console.log('\n\n' + cenText('*** SHIP LEGEND ***\n', 76));
+   console.log('\n\n' + cenText('*** SHIP LEGEND ***\n', 80));
    for (let i in player.ships) {
       if (player.ships[i].isSunk) {
          console.log('\t', colorHitShot(player.ships[i].id), '  - ', player.ships[i].name + ' (' + player.ships[i].type + ')');
@@ -355,7 +355,7 @@ const humanPlaceShips = (player, isValid) => {
       while (!success) {
          //setupGameBanner();
          viewBattleGridPlayer(player, false,);
-         console.log('\n\n\n' + cenText(`<<< P L A C E  S H I P S >>>`, 76));
+         console.log('\n\n\n' + cenText(`<<< P L A C E  S H I P S >>>`, 80));
          placement = promptForShipGridCoord(player, i);
          orientation = promptForShipGridOrientation();
          if (isValid(placement)) {
